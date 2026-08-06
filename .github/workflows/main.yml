@@ -1,0 +1,33 @@
+name: Daily Exam Scraper Auto-Run
+
+on:
+  schedule:
+    # প্রতিদিন সকাল ৮ টায় কোডটি রান করবে (UTC Time অনুযায়ী)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # ম্যানুয়ালি রান করানোর অপশন
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run Scraper Script with AI
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scraper.py
+
+      - name: Save Auto-Generated Data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "ExamDootAI Bot"
+          git add exams_data.json
+          git commit -m "Auto-updated latest exam notifications" || echo "No changes to commit"
+          git push

@@ -65,27 +65,49 @@
     </div>
 
     <script>
-        // exams_data.json থেকে ডেটা নিয়ে পেজে দেখানো হচ্ছে
-        fetch('exams_data.json')
+        // ডেটাবেসের সরাসরি লিংক এবং ক্যাশ এড়ানোর সেটিংস
+        const dbUrl = 'https://examdootai.github.io/ExamDootAI/exams_data.json';
+
+        fetch(dbUrl, { cache: "no-store" })
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('exams-container');
                 container.innerHTML = ''; // Loading টেক্সট সরিয়ে ফেলা
                 
-                data.exams.forEach(exam => {
-                    const card = document.createElement('div');
-                    card.className = 'exam-card';
-                    card.innerHTML = `
-                        <h2>${exam.exam_name}</h2>
-                        <p>স্ট্যাটাস: <span class="status">${exam.status}</span></p>
-                        <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${exam.form_fillup_start}</p>
-                        <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
-                    `;
-                    container.appendChild(card);
-                });
+                // ডেটাবেসের স্ট্রাকচার অনুযায়ী ডেটা খুঁজে বের করা
+                let examList = [];
+                if (Array.isArray(data)) {
+                    examList = data;
+                } else if (data.exams && Array.isArray(data.exams)) {
+                    examList = data.exams;
+                }
+
+                if (examList.length > 0) {
+                    examList.forEach(exam => {
+                        const card = document.createElement('div');
+                        card.className = 'exam-card';
+                        
+                        // JSON-এ যে নামেই ডেটা থাকুক না কেন, এটি ধরে নেবে
+                        const examName = exam.exam_name || exam.title || exam.name || 'অজানা পরীক্ষা';
+                        const examStatus = exam.status || exam.date || 'নতুন আপডেট উপলব্ধ';
+                        const formStart = exam.form_fillup_start || 'শীঘ্রই জানানো হবে';
+                        const formEnd = exam.form_fillup_end || 'শীঘ্রই জানানো হবে';
+
+                        card.innerHTML = `
+                            <h2>${examName}</h2>
+                            <p>স্ট্যাটাস: <span class="status">${examStatus}</span></p>
+                            <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${formStart}</p>
+                            <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${formEnd}</p>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align:center; color:#e74c3c; font-weight:bold;">এই মুহূর্তে নতুন কোনো পরীক্ষার ডেটা নেই।</p>';
+                }
             })
             .catch(error => {
-                document.getElementById('exams-container').innerHTML = '<p style="text-align:center; color:red;">ডেটা লোড করতে সমস্যা হচ্ছে। ডেটাবেস আপডেট হচ্ছে কিনা চেক করুন।</p>';
+                console.error('Fetch Error:', error);
+                document.getElementById('exams-container').innerHTML = '<p style="text-align:center; color:red; font-weight:bold;">ডেটা লোড করতে সমস্যা হচ্ছে। ডেটাবেস আপডেট হচ্ছে কিনা চেক করুন।</p>';
             });
     </script>
 </body>

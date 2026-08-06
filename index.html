@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamDootAI - Government Exam Alerts</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #eef2f3; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            border-bottom: 2px solid #3498db; 
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .exam-card { 
+            border-left: 6px solid #3498db; 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin-top: 15px; 
+            border-radius: 8px; 
+        }
+        .exam-card h2 { 
+            margin: 0 0 10px 0; 
+            color: #2980b9; 
+            font-size: 18px; 
+        }
+        .status { 
+            font-weight: bold; 
+            color: #e74c3c; 
+            background: #fadbd8;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        p { margin: 8px 0; color: #34495e; font-size: 15px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ExamDootAI 🚀</h1>
+        <p class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</p>
+        
+        <div id="exams-container">
+            <p style="text-align: center; color: #7f8c8d;">ডেটা লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+        </div>
+    </div>
+
+    <script>
+        // exams_data.json থেকে ডেটা নিয়ে পেজে দেখানো হচ্ছে
+        fetch('exams_data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('exams-container');
+                container.innerHTML = ''; // Loading টেক্সট সরিয়ে ফেলা
+                
+                data.exams.forEach(exam => {
+                    const card = document.createElement('div');
+                    card.className = 'exam-card';
+                    card.innerHTML = `
+                        <h2>${exam.exam_name}</h2>
+                        <p>স্ট্যাটাস: <span class="status">${exam.status}</span></p>
+                        <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${exam.form_fillup_start}</p>
+                        <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                document.getElementById('exams-container').innerHTML = '<p style="text-align:center; color:red;">ডেটা লোড করতে সমস্যা হচ্ছে। ডেটাবেস আপডেট হচ্ছে কিনা চেক করুন।</p>';
+            });
+    </script>
+</body>
+</html>

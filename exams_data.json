@@ -1,14 +1,10 @@
 {
     "exams": [
         {
-            "exam_name": "Demo West Bengal State Exam 2026",
-            "status": "Notification Out",
-            "form_fillup_start": "2026-09-01",
-            "form_fillup_end": "2026-09-20",
-            "reminder_days": [
-                7,
-                "last_7"
-            ]
+            "exam_name": "West Bengal Group D Examination",
+            "status": "অপেক্ষারত (Awaiting)",
+            "form_fillup_start": "শীঘ্রই ঘোষণা করা হবে",
+            "form_fillup_end": "শীঘ্রই ঘোষণা করা হবে"
         }
     ]
 }

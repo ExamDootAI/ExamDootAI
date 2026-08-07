@@ -1,9 +1,14 @@
 import json
 import re
-import cloudscraper
+import urllib.request
+import ssl
+from curl_cffi import requests
+
+# সাধারণ সাইটের জন্য SSL মাস্টার-কি
+ssl_context = ssl._create_unverified_context()
 
 # ==========================================
-# কনফিগারেশন লিস্ট
+# কনফিগারেশন লিস্ট (Hybrid Method)
 # ==========================================
 EXAM_SITES = [
     {
@@ -11,26 +16,29 @@ EXAM_SITES = [
         "exam_name": "West Bengal Group D / WBPRB",
         "url": "https://wbpolice.gov.in/",
         "keywords": ["Notice", "Recruitment", "Group D", "Constable"],
-        "default_url": "https://wbpolice.gov.in/"
+        "default_url": "https://wbpolice.gov.in/",
+        "method": "advanced" # এর জন্য আমরা নতুন curl_cffi ব্যবহার করব
     },
     {
         "id": "wbpsc",
         "exam_name": "WBPSC Official Website",
         "url": "https://psc.wb.gov.in/",
         "keywords": ["Advertisement", "Notice", "Result"],
-        "default_url": "https://psc.wb.gov.in/"
+        "default_url": "https://psc.wb.gov.in/",
+        "method": "basic" # এর জন্য পুরনো সফল পদ্ধতি ব্যবহার করব
     },
     {
         "id": "ssc",
         "exam_name": "SSC (Staff Selection Commission)",
         "url": "https://ssc.gov.in/",
         "keywords": ["Notice", "Examination", "Result", "Apply"],
-        "default_url": "https://ssc.gov.in/"
+        "default_url": "https://ssc.gov.in/",
+        "method": "basic"
     }
 ]
 
 # ==========================================
-# ইউনিভার্সাল স্ক্যানার (Cloudscraper Enabled)
+# ইউনিভার্সাল স্ক্যানার
 # ==========================================
 def scan_website(site):
     print(f"Scanning {site['exam_name']}...")
@@ -42,16 +50,19 @@ def scan_website(site):
     }
     
     try:
-        # Cloudscraper দিয়ে অ্যাডভান্সড বাইপাস
-        scraper = cloudscraper.create_scraper(
-            browser={
-                'browser': 'chrome',
-                'platform': 'windows',
-                'desktop': True
-            }
-        )
-        response = scraper.get(site['url'], timeout=20)
-        html_data = response.text
+        html_data = ""
+        
+        # পদ্ধতি নির্বাচন
+        if site['method'] == 'advanced':
+            # WBPRB-এর ফায়ারওয়াল ভাঙার জন্য হুবহু Chrome ব্রাউজারের সিগনেচার
+            response = requests.get(site['url'], impersonate="chrome110", timeout=20)
+            html_data = response.text
+        else:
+            # WBPSC এবং SSC-এর জন্য সাধারণ সফল পদ্ধতি
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            req = urllib.request.Request(site['url'], headers=headers)
+            response = urllib.request.urlopen(req, context=ssl_context, timeout=15)
+            html_data = response.read().decode('utf-8', errors='ignore')
         
         # Regex দিয়ে নোটিশ খোঁজা
         keywords_pattern = "|".join(site['keywords'])

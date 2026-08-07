@@ -1,14 +1,9 @@
 import json
-import urllib.request
-import urllib.error
 import re
-import ssl
-
-# SSL সিকিউরিটি বাইপাস
-ssl_context = ssl._create_unverified_context()
+import cloudscraper
 
 # ==========================================
-# কনফিগারেশন লিস্ট (এখানে নতুন সাইট যোগ করা একদম সহজ!)
+# কনফিগারেশন লিস্ট
 # ==========================================
 EXAM_SITES = [
     {
@@ -35,7 +30,7 @@ EXAM_SITES = [
 ]
 
 # ==========================================
-# ইউনিভার্সাল স্ক্যানার (Universal Scanner)
+# ইউনিভার্সাল স্ক্যানার (Cloudscraper Enabled)
 # ==========================================
 def scan_website(site):
     print(f"Scanning {site['exam_name']}...")
@@ -47,15 +42,16 @@ def scan_website(site):
     }
     
     try:
-        # অ্যাডভান্সড ছদ্মবেশ: বটকে মানুষের ক্রোম ব্রাউজার সাজানো হচ্ছে
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5'
-        }
-        req = urllib.request.Request(site['url'], headers=headers)
-        response = urllib.request.urlopen(req, context=ssl_context, timeout=15)
-        html_data = response.read().decode('utf-8', errors='ignore')
+        # Cloudscraper দিয়ে অ্যাডভান্সড বাইপাস
+        scraper = cloudscraper.create_scraper(
+            browser={
+                'browser': 'chrome',
+                'platform': 'windows',
+                'desktop': True
+            }
+        )
+        response = scraper.get(site['url'], timeout=20)
+        html_data = response.text
         
         # Regex দিয়ে নোটিশ খোঁজা
         keywords_pattern = "|".join(site['keywords'])
@@ -91,12 +87,10 @@ def scan_website(site):
 def run_master_bot():
     all_exams = []
     
-    # ডায়নামিক লুপ: একটি মাত্র লুপ দিয়ে সব ওয়েবসাইট স্ক্যান!
     for site in EXAM_SITES:
         data = scan_website(site)
         all_exams.append(data)
         
-    # RRB-র জন্য স্পেশাল কার্ড
     all_exams.append({
         "exam_name": "RRB (Railway Recruitment Board)",
         "status": "নতুন আপডেটের খোঁজ চলছে 🚂",

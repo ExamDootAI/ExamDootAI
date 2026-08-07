@@ -1,15 +1,15 @@
 {
     "exams": [
         {
-            "exam_name": "West Bengal Group D Examination",
-            "status": "অফিসিয়াল আপডেটের অপেক্ষায় ⏳",
+            "exam_name": "West Bengal Group D / WBPRB",
+            "status": "সার্ভার ব্যস্ত 🔴",
             "form_fillup_start": "শীঘ্রই ঘোষণা করা হবে",
             "form_fillup_end": "<a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>অফিসিয়াল ওয়েবসাইটে</a> নজর রাখুন"
         },
         {
             "exam_name": "WBPSC Official Website",
-            "status": "সার্ভার ব্যস্ত / Protected 🔴",
-            "form_fillup_start": "-",
+            "status": "Site Active 🟢",
+            "form_fillup_start": "<a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>psc.wb.gov.in</a> চেক করুন",
             "form_fillup_end": "-"
         },
         {

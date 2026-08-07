@@ -9,106 +9,151 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #eef2f3; 
             margin: 0; 
-            padding: 20px; 
+            padding: 15px; 
+            color: #333; 
         }
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
             background: white; 
-            padding: 20px; 
+            padding: 25px; 
             border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
         }
         h1 { 
-            color: #2c3e50; 
             text-align: center; 
-            border-bottom: 2px solid #3498db; 
-            padding-bottom: 10px;
+            color: #1a365d; 
+            margin-top: 0;
+            margin-bottom: 5px; 
         }
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-bottom: 20px;
+        .subtitle { 
+            text-align: center; 
+            color: #666; 
+            margin-bottom: 20px; 
+            font-size: 15px; 
+            border-bottom: 2px solid #007bff; 
+            padding-bottom: 15px;
         }
-        .exam-card { 
-            border-left: 6px solid #3498db; 
-            background: #f8f9fa; 
-            padding: 15px; 
-            margin-top: 15px; 
+        .controls { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .last-updated {
+            font-size: 13px;
+            color: #555;
+        }
+        .refresh-btn { 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .refresh-btn:hover { background-color: #0056b3; }
+        .refresh-btn:active { transform: scale(0.95); }
+        .card { 
+            border-left: 5px solid #007bff; 
+            background: #fafbfc; 
+            margin-bottom: 20px; 
+            padding: 18px; 
             border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); 
         }
-        .exam-card h2 { 
-            margin: 0 0 10px 0; 
-            color: #2980b9; 
+        .exam-title { 
             font-size: 18px; 
+            color: #007bff; 
+            font-weight: bold; 
+            margin-top: 0; 
+            margin-bottom: 12px; 
         }
         .status { 
+            background: #ffebeb; 
+            color: #d32f2f; 
+            padding: 4px 10px; 
+            border-radius: 5px; 
             font-weight: bold; 
-            color: #e74c3c; 
-            background: #fadbd8;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 14px;
+            font-size: 13px; 
+            display: inline-block; 
+            margin-bottom: 12px; 
         }
-        p { margin: 8px 0; color: #34495e; font-size: 15px;}
+        .status.active { background: #e6f4ea; color: #1e8e3e; }
+        p { margin: 8px 0; font-size: 15px; line-height: 1.5; color: #202124; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>ExamDootAI 🚀</h1>
-        <p class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</p>
+        <div class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
+        <div class="controls">
+            <span class="last-updated" id="last-updated">ডেটা চেক করা হচ্ছে... ⏳</span>
+            <button class="refresh-btn" onclick="fetchData()">Refresh 🔄</button>
+        </div>
+
         <div id="exams-container">
-            <p style="text-align: center; color: #7f8c8d;">ডেটা লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+            <!-- ডায়নামিক ডেটা এখানে আসবে -->
         </div>
     </div>
 
     <script>
-        // ডেটাবেসের সরাসরি লিংক এবং ক্যাশ এড়ানোর সেটিংস
-        const dbUrl = 'https://examdootai.github.io/ExamDootAI/exams_data.json';
-
-        fetch(dbUrl, { cache: "no-store" })
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('exams-container');
-                container.innerHTML = ''; // Loading টেক্সট সরিয়ে ফেলা
-                
-                // ডেটাবেসের স্ট্রাকচার অনুযায়ী ডেটা খুঁজে বের করা
-                let examList = [];
-                if (Array.isArray(data)) {
-                    examList = data;
-                } else if (data.exams && Array.isArray(data.exams)) {
-                    examList = data.exams;
-                }
-
-                if (examList.length > 0) {
-                    examList.forEach(exam => {
-                        const card = document.createElement('div');
-                        card.className = 'exam-card';
+        function fetchData() {
+            const container = document.getElementById('exams-container');
+            const lastUpdated = document.getElementById('last-updated');
+            container.innerHTML = '<p style="text-align:center; font-weight:bold; color:#007bff;">নতুন ডেটা লোড হচ্ছে... ⏳</p>';
+            
+            // Cache busting - ব্রাউজার যাতে পুরনো ডেটা না দেখায়
+            const url = 'exams_data.json?t=' + new Date().getTime();
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = '';
+                    if(data.exams && data.exams.length > 0) {
+                        data.exams.forEach(exam => {
+                            let statusClass = 'status';
+                            if(exam.status.includes('🟢') || exam.status.includes('🔔')) {
+                                statusClass += ' active';
+                            }
+                            
+                            const card = document.createElement('div');
+                            card.className = 'card';
+                            card.innerHTML = `
+                                <h3 class="exam-title">${exam.exam_name}</h3>
+                                <div class="${statusClass}">স্ট্যাটাস: ${exam.status}</div>
+                                <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${exam.form_fillup_start}</p>
+                                <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
+                            `;
+                            container.appendChild(card);
+                        });
                         
-                        // JSON-এ যে নামেই ডেটা থাকুক না কেন, এটি ধরে নেবে
-                        const examName = exam.exam_name || exam.title || exam.name || 'অজানা পরীক্ষা';
-                        const examStatus = exam.status || exam.date || 'নতুন আপডেট উপলব্ধ';
-                        const formStart = exam.form_fillup_start || 'শীঘ্রই জানানো হবে';
-                        const formEnd = exam.form_fillup_end || 'শীঘ্রই জানানো হবে';
+                        // বর্তমান সময় সেট করা
+                        const now = new Date();
+                        let timeString = now.toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        lastUpdated.innerHTML = `<strong>শেষ আপডেট:</strong><br>${timeString}`;
+                    } else {
+                        container.innerHTML = '<p style="text-align:center;">কোনো ডেটা পাওয়া যায়নি!</p>';
+                    }
+                })
+                .catch(error => {
+                    container.innerHTML = '<p style="color:red; text-align:center; font-weight:bold;">ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।</p>';
+                    console.error('Error:', error);
+                });
+        }
 
-                        card.innerHTML = `
-                            <h2>${examName}</h2>
-                            <p>স্ট্যাটাস: <span class="status">${examStatus}</span></p>
-                            <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${formStart}</p>
-                            <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${formEnd}</p>
-                        `;
-                        container.appendChild(card);
-                    });
-                } else {
-                    container.innerHTML = '<p style="text-align:center; color:#e74c3c; font-weight:bold;">এই মুহূর্তে নতুন কোনো পরীক্ষার ডেটা নেই।</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Fetch Error:', error);
-                document.getElementById('exams-container').innerHTML = '<p style="text-align:center; color:red; font-weight:bold;">ডেটা লোড করতে সমস্যা হচ্ছে। ডেটাবেস আপডেট হচ্ছে কিনা চেক করুন।</p>';
-            });
+        // পেজ খুললেই স্বয়ংক্রিয়ভাবে ডেটা আনবে
+        window.onload = fetchData;
     </script>
 </body>
 </html>

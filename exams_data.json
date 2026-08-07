@@ -4,19 +4,19 @@
             "exam_name": "West Bengal Group D / WBPRB",
             "status": "সার্ভার ব্যস্ত 🔴",
             "form_fillup_start": "শীঘ্রই ঘোষণা করা হবে",
-            "form_fillup_end": "<a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>অফিসিয়াল ওয়েবসাইটে</a> নজর রাখুন"
+            "form_fillup_end": "<a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ওয়েবসাইট</a> চেক করুন"
         },
         {
             "exam_name": "WBPSC Official Website",
-            "status": "Site Active 🟢",
-            "form_fillup_start": "<a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>psc.wb.gov.in</a> চেক করুন",
-            "form_fillup_end": "-"
+            "status": "New Update 🔔",
+            "form_fillup_start": "নোটিশ: &nbsp;Advertisement/ Announcement",
+            "form_fillup_end": "বিস্তারিত জানতে <a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
         },
         {
             "exam_name": "SSC (Staff Selection Commission)",
             "status": "Site Active 🟢",
             "form_fillup_start": "আজ নতুন কোনো নোটিশ নেই",
-            "form_fillup_end": "<a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ssc.gov.in</a> চেক করুন"
+            "form_fillup_end": "<a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>অফিসিয়াল ওয়েবসাইট</a> চেক করুন"
         },
         {
             "exam_name": "RRB (Railway Recruitment Board)",

@@ -1,4 +1,4 @@
-## Hi there 👋 update all 
+## Hi there 👋  
 
 <!--
 **ExamDootAI/ExamDootAI** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.

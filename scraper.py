@@ -10,12 +10,12 @@ from datetime import datetime
 def bot_west_bengal():
     exams = []
     
-    # West Bengal Group D (আপনার স্পেশাল টার্গেট)
+    # West Bengal Group D 
     exams.append({
         "exam_name": "West Bengal Group D Examination",
         "status": "অফিসিয়াল আপডেটের অপেক্ষায় ⏳",
         "form_fillup_start": "শীঘ্রই ঘোষণা করা হবে",
-        "form_fillup_end": "অফিসিয়াল ওয়েবসাইটে নজর রাখুন"
+        "form_fillup_end": "<a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>অফিসিয়াল ওয়েবসাইটে</a> নজর রাখুন"
     })
     
     # WBPSC Check
@@ -26,7 +26,7 @@ def bot_west_bengal():
         exams.append({
             "exam_name": "WBPSC Official Website",
             "status": "Site Active 🟢",
-            "form_fillup_start": "psc.wb.gov.in চেক করুন",
+            "form_fillup_start": "<a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>psc.wb.gov.in</a> চেক করুন",
             "form_fillup_end": "-"
         })
     except:
@@ -52,10 +52,8 @@ def bot_central_govt():
         response = urllib.request.urlopen(req, timeout=15)
         html_data = response.read().decode('utf-8')
         
-        # Regex দিয়ে "Notice", "Examination", বা "Apply" লেখা লেটেস্ট আপডেট খোঁজা
         notices = re.findall(r'<a[^>]*>([^<]*(?:Notice|Examination|Result|Apply)[^<]*)</a>', html_data, re.IGNORECASE)
         
-        # নোটিশগুলো পরিষ্কার করা (HTML ট্যাগ সরানো)
         clean_notices = []
         for n in notices:
             clean_text = n.strip().replace('\n', '').replace('\r', '')
@@ -63,20 +61,19 @@ def bot_central_govt():
                 clean_notices.append(clean_text)
         
         if clean_notices:
-            # লেটেস্ট নোটিশটি ওয়েবসাইটে দেখানোর জন্য
             latest_notice = clean_notices[0][:60] + "..." if len(clean_notices[0]) > 60 else clean_notices[0]
             exams.append({
                 "exam_name": "SSC (Staff Selection Commission)",
                 "status": "New Update 🔔",
                 "form_fillup_start": f"নোটিশ: {latest_notice}",
-                "form_fillup_end": "বিস্তারিত জানতে ssc.gov.in দেখুন"
+                "form_fillup_end": "বিস্তারিত জানতে <a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ssc.gov.in</a> দেখুন"
             })
         else:
             exams.append({
                 "exam_name": "SSC (Staff Selection Commission)",
                 "status": "Site Active 🟢",
                 "form_fillup_start": "আজ নতুন কোনো নোটিশ নেই",
-                "form_fillup_end": "ssc.gov.in চেক করুন"
+                "form_fillup_end": "<a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ssc.gov.in</a> চেক করুন"
             })
             
     except Exception as e:
@@ -91,8 +88,8 @@ def bot_central_govt():
     exams.append({
         "exam_name": "RRB (Railway Recruitment Board)",
         "status": "নতুন আপডেটের খোঁজ চলছে 🚂",
-        "form_fillup_start": "indianrailways.gov.in",
-        "form_fillup_end": "indianrailways.gov.in"
+        "form_fillup_start": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>",
+        "form_fillup_end": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>"
     })
     
     return exams
@@ -110,3 +107,4 @@ def run_master_bot():
         
 if __name__ == "__main__":
     run_master_bot()
+

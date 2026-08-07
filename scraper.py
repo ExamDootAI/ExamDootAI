@@ -1,14 +1,17 @@
 import json
 import re
 import urllib.request
+import urllib.parse
 import ssl
-from curl_cffi import requests
 
 # সাধারণ সাইটের জন্য SSL মাস্টার-কি
 ssl_context = ssl._create_unverified_context()
 
+# আপনার ScraperAPI Key
+API_KEY = "0bacbfa123fb6b3ff27bd417951af2fe"
+
 # ==========================================
-# কনফিগারেশন লিস্ট (Hybrid Method)
+# কনফিগারেশন লিস্ট
 # ==========================================
 EXAM_SITES = [
     {
@@ -17,7 +20,7 @@ EXAM_SITES = [
         "url": "https://wbpolice.gov.in/",
         "keywords": ["Notice", "Recruitment", "Group D", "Constable"],
         "default_url": "https://wbpolice.gov.in/",
-        "method": "advanced" # এর জন্য আমরা নতুন curl_cffi ব্যবহার করব
+        "method": "scraperapi" # এর জন্য আমরা ভারতের প্রক্সি ব্যবহার করব
     },
     {
         "id": "wbpsc",
@@ -25,7 +28,7 @@ EXAM_SITES = [
         "url": "https://psc.wb.gov.in/",
         "keywords": ["Advertisement", "Notice", "Result"],
         "default_url": "https://psc.wb.gov.in/",
-        "method": "basic" # এর জন্য পুরনো সফল পদ্ধতি ব্যবহার করব
+        "method": "scraperapi" # এর জন্যও ভারতের প্রক্সি ব্যবহার করব
     },
     {
         "id": "ssc",
@@ -33,7 +36,7 @@ EXAM_SITES = [
         "url": "https://ssc.gov.in/",
         "keywords": ["Notice", "Examination", "Result", "Apply"],
         "default_url": "https://ssc.gov.in/",
-        "method": "basic"
+        "method": "basic" # এটি সরাসরি কাজ করে, তাই ফ্রি রিকোয়েস্ট বাঁচাব
     }
 ]
 
@@ -52,13 +55,17 @@ def scan_website(site):
     try:
         html_data = ""
         
-        # পদ্ধতি নির্বাচন
-        if site['method'] == 'advanced':
-            # WBPRB-এর ফায়ারওয়াল ভাঙার জন্য হুবহু Chrome ব্রাউজারের সিগনেচার
-            response = requests.get(site['url'], impersonate="chrome110", timeout=20)
-            html_data = response.text
+        if site['method'] == 'scraperapi':
+            # ScraperAPI এর মাধ্যমে রিকোয়েস্ট পাঠানো (country_code=in এর সাহায্যে ভারতের IP)
+            target_url = urllib.parse.quote(site['url'])
+            api_url = f"http://api.scraperapi.com?api_key={API_KEY}&url={target_url}&country_code=in"
+            
+            req = urllib.request.Request(api_url)
+            # প্রক্সির মাধ্যমে আসতে একটু সময় লাগতে পারে, তাই timeout বাড়িয়ে 30 করা হলো
+            response = urllib.request.urlopen(req, timeout=30)
+            html_data = response.read().decode('utf-8', errors='ignore')
         else:
-            # WBPSC এবং SSC-এর জন্য সাধারণ সফল পদ্ধতি
+            # SSC-এর জন্য সাধারণ পদ্ধতি
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
             req = urllib.request.Request(site['url'], headers=headers)
             response = urllib.request.urlopen(req, context=ssl_context, timeout=15)

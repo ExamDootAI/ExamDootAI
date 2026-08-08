@@ -11,24 +11,39 @@ ssl_context = ssl._create_unverified_context()
 API_KEY = "0bacbfa123fb6b3ff27bd417951af2fe"
 
 # ==========================================
-# কনফিগারেশন লিস্ট (Hybrid + Google News RSS)
+# কনফিগারেশন লিস্ট (Hybrid + Google News RSS + All Official Sites)
 # ==========================================
 EXAM_SITES = [
     {
         "id": "wbprb",
         "exam_name": "West Bengal Group D / WBPRB",
-        # Google News RSS থেকে সরাসরি বাংলা আপডেট!
         "url": "https://news.google.com/rss/search?q=WBPRB+OR+West+Bengal+Police+recruitment+notice&hl=bn&gl=IN&ceid=IN:bn",
         "default_url": "https://wbpolice.gov.in/",
         "method": "google_news" 
     },
     {
         "id": "wbpsc",
-        "exam_name": "WBPSC Official Website",
+        "exam_name": "WBPSC (West Bengal Public Service Commission)",
         "url": "https://psc.wb.gov.in/",
         "keywords": ["Advertisement", "Notice", "Result"],
         "default_url": "https://psc.wb.gov.in/",
-        "method": "scraperapi" # এটি সফলভাবে কাজ করছে
+        "method": "scraperapi"
+    },
+    {
+        "id": "wbbpe",
+        "exam_name": "WBBPE (Primary TET / Education)",
+        "url": "https://wbbpe.org/",
+        "keywords": ["Notice", "Notification", "TET"],
+        "default_url": "https://wbbpe.org/",
+        "method": "basic"
+    },
+    {
+        "id": "wbhrb",
+        "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
+        "url": "https://wbhrb.in/",
+        "keywords": ["Advertisement", "Notice"],
+        "default_url": "https://wbhrb.in/",
+        "method": "basic"
     },
     {
         "id": "ssc",
@@ -36,7 +51,31 @@ EXAM_SITES = [
         "url": "https://ssc.gov.in/",
         "keywords": ["Notice", "Examination", "Result", "Apply"],
         "default_url": "https://ssc.gov.in/",
-        "method": "basic" # এটিও সফল
+        "method": "basic"
+    },
+    {
+        "id": "upsc",
+        "exam_name": "UPSC (Union Public Service Commission)",
+        "url": "https://upsc.gov.in/",
+        "keywords": ["Notification", "Examination"],
+        "default_url": "https://upsc.gov.in/",
+        "method": "basic"
+    },
+    {
+        "id": "rrb",
+        "exam_name": "RRB (Railway Recruitment Board)",
+        "url": "https://indianrailways.gov.in/",
+        "keywords": ["Recruitment", "Notice", "Railway"],
+        "default_url": "https://indianrailways.gov.in/",
+        "method": "basic"
+    },
+    {
+        "id": "ibps",
+        "exam_name": "IBPS (Banking - PO & Clerk)",
+        "url": "https://www.ibps.in/",
+        "keywords": ["CRP", "Notification", "CWE"],
+        "default_url": "https://www.ibps.in/",
+        "method": "basic"
     }
 ]
 
@@ -48,18 +87,16 @@ def scan_website(site):
     result = {
         "exam_name": site["exam_name"],
         "status": "সার্ভার ব্যস্ত 🔴",
-        "form_fillup_start": "-",
-        "form_fillup_end": f"<a href='{site['default_url']}' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ওয়েবসাইট</a> চেক করুন"
+        "form_fillup_start": "অফিশিয়াল সাইট: <a href='" + site['default_url'] + "' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>" + site['default_url'].replace('https://', '').replace('/', '') + "</a>",
+        "form_fillup_end": f"বিস্তারিত জানতে <a href='{site['default_url']}' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
     }
     
     try:
         if site['method'] == 'google_news':
-            # Google News থেকে খবর টানা (কখনো ব্লক হবে না)
             req = urllib.request.Request(site['url'], headers={'User-Agent': 'Mozilla/5.0'})
             response = urllib.request.urlopen(req, context=ssl_context, timeout=15)
             xml_data = response.read().decode('utf-8', errors='ignore')
             
-            # প্রথম খবরের হেডলাইন বের করা
             titles = re.findall(r'<item>.*?<title>(.*?)</title>', xml_data, re.IGNORECASE | re.DOTALL)
             if titles:
                 latest_news = titles[0].replace('&#39;', "'").replace('&quot;', '"')
@@ -137,13 +174,6 @@ def run_master_bot():
     for site in EXAM_SITES:
         data = scan_website(site)
         all_exams.append(data)
-        
-    all_exams.append({
-        "exam_name": "RRB (Railway Recruitment Board)",
-        "status": "নতুন আপডেটের খোঁজ চলছে 🚂",
-        "form_fillup_start": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>",
-        "form_fillup_end": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>"
-    })
     
     with open('exams_data.json', 'w', encoding='utf-8') as f:
         json.dump({"exams": all_exams}, f, ensure_ascii=False, indent=4)

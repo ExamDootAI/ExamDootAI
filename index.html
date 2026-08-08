@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamDootAI - Government Exam Alerts</title>
-    <!-- প্রিমিয়াম ফন্ট যুক্ত করা হলো -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -45,8 +44,7 @@
             background: var(--container-bg); 
             padding: 30px; 
             border-radius: 20px; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); 
-            transition: background 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); 
             border: 1px solid var(--border-color);
         }
         .header-top {
@@ -59,9 +57,13 @@
             margin: 0; 
             font-size: 26px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
-        .theme-btn {
+        .header-btns {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .theme-btn, .auth-btn {
             background: var(--controls-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
@@ -72,7 +74,7 @@
             font-weight: 600;
             transition: all 0.2s ease;
         }
-        .theme-btn:hover {
+        .theme-btn:hover, .auth-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
@@ -98,7 +100,6 @@
         .last-updated {
             font-size: 12px;
             color: var(--sub-text);
-            line-height: 1.4;
         }
         .refresh-btn { 
             background-color: var(--primary); 
@@ -109,11 +110,8 @@
             cursor: pointer; 
             font-weight: 600; 
             font-size: 13px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
         }
-        .refresh-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-        .refresh-btn:active { transform: translateY(0); }
+        .refresh-btn:hover { background-color: var(--primary-hover); }
         .card { 
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--primary); 
@@ -121,13 +119,6 @@
             margin-bottom: 20px; 
             padding: 20px; 
             border-radius: 14px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); 
-            transition: all 0.25s ease;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            border-color: var(--primary);
         }
         .exam-title { 
             font-size: 17px; 
@@ -145,20 +136,69 @@
             font-size: 12px; 
             display: inline-block; 
             margin-bottom: 12px; 
-            letter-spacing: 0.3px;
         }
         .status.active { background: #f0fdf4; color: #16a34a; }
         p { margin: 8px 0; font-size: 14px; line-height: 1.6; color: var(--sub-text); }
-        p strong { color: var(--text-color); font-weight: 600; }
-        
-        a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
+        p strong { color: var(--text-color); }
+        a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+
+        /* মোডাল স্টাইল */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-        a:hover {
-            text-decoration: underline;
+        .modal-content {
+            background: var(--container-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-content h3 { margin-top: 0; color: var(--primary); }
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--controls-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        .social-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .close-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -166,7 +206,10 @@
     <div class="container">
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
-            <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 ডার্ক মোড</button>
+            <div class="header-btns">
+                <button class="auth-btn" id="auth-action-btn" onclick="openAuthModal()">লগইন / সাইন আপ</button>
+                <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 ডার্ক</button>
+            </div>
         </div>
         <div class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
@@ -175,10 +218,107 @@
             <button class="refresh-btn" onclick="fetchData()">Refresh 🔄</button>
         </div>
 
-        <div id="exams-container">
-            <!-- ডায়নামিক ডেটা এখানে আসবে -->
+        <div id="exams-container"></div>
+    </div>
+
+    <!-- লগইন মোডাল -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">লগইন করুন</h3>
+            
+            <!-- গুগল লগইন বাটন -->
+            <button class="social-btn" onclick="handleGoogleLogin()">
+                🌐 Google দিয়ে লগইন করুন
+            </button>
+
+            <p style="text-align: center; margin: 10px 0;">অথবা ইমেল দিয়ে</p>
+            <input type="email" id="email" placeholder="ইমেল লিখুন">
+            <input type="password" id="password" placeholder="পাসওয়ার্ড লিখুন">
+            <div id="auth-error" style="color: red; font-size: 12px; margin-bottom: 10px;"></div>
+            
+            <div class="modal-buttons">
+                <button class="refresh-btn" onclick="handleEmailAuth()">ইমেল সাবমিট</button>
+                <button class="close-btn" onclick="closeAuthModal()">বন্ধ করুন</button>
+            </div>
+
+            <p style="text-align: center; margin-top: 15px; font-size: 13px;">
+                অ্যাকাউন্ট নেই? <a href="#" onclick="toggleAuthMode(event)" id="switch-mode-link">সাইন আপ করুন</a>
+            </p>
         </div>
     </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
+            signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuh78TDVUJFQBebEtzrhlo09usrasXUgU",
+            authDomain: "diti-53fb6.firebaseapp.com",
+            projectId: "diti-53fb6",
+            storageBucket: "diti-53fb6.firebasestorage.app",
+            messagingSenderId: "775144037393",
+            appId: "1:775144037393:web:e46ea30ea46edd0acd25b0",
+            measurementId: "G-Q39EX6NE8Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        let isSignUp = false;
+
+        window.openAuthModal = function() {
+            document.getElementById('auth-modal').style.display = 'flex';
+        }
+
+        window.closeAuthModal = function() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        window.toggleAuthMode = function(e) {
+            e.preventDefault();
+            isSignUp = !isSignUp;
+            document.getElementById('modal-title').innerText = isSignUp ? 'সাইন আপ করুন' : 'লগইন করুন';
+            document.getElementById('switch-mode-link').innerText = isSignUp ? 'লগইন করুন' : 'সাইন আপ করুন';
+        }
+
+        window.handleEmailAuth = function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('auth-error');
+            errorElement.innerText = '';
+
+            if(isSignUp) {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then(() => closeAuthModal())
+                    .catch((error) => errorElement.innerText = error.message);
+            } else {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => closeAuthModal())
+                    .catch((error) => errorElement.innerText = error.message);
+            }
+        }
+
+        window.handleGoogleLogin = function() {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then(() => closeAuthModal())
+                .catch((error) => alert(error.message));
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            const authBtn = document.getElementById('auth-action-btn');
+            if (user) {
+                authBtn.innerText = 'লগআউট';
+                authBtn.onclick = () => signOut(auth);
+            } else {
+                authBtn.innerText = 'লগইন / সাইন আপ';
+                authBtn.onclick = openAuthModal;
+            }
+        });
+    </script>
 
     <script>
         function toggleTheme() {
@@ -186,11 +326,11 @@
             const themeBtn = document.getElementById('theme-toggle');
             if (currentTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'light');
-                themeBtn.innerHTML = '🌙 ডার্ক মোড';
+                themeBtn.innerHTML = '🌙 ডার্ক';
                 localStorage.setItem('theme', 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '☀️ লাইট মোড';
+                themeBtn.innerHTML = '☀️ লাইট';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -198,7 +338,7 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         if (savedTheme === 'dark') {
-            document.getElementById('theme-toggle').innerHTML = '☀️ লাইট মোড';
+            document.getElementById('theme-toggle').innerHTML = '☀️ লাইট';
         }
 
         function fetchData() {
@@ -245,7 +385,7 @@
                     }
                 })
                 .catch(error => {
-                    container.innerHTML = '<p style="color:#dc2626; text-align:center; font-weight:600;">ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।</p>';
+                    container.innerHTML = '<p style="color:#dc2626; text-align:center; font-weight:600;">ডেটা লোড করতে সমস্যা হয়েছে!</p>';
                     console.error('Error:', error);
                 });
         }

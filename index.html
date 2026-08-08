@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ExamDootAI - Government Exam Alerts</title>
     <style>
         :root {
@@ -34,7 +34,6 @@
             transition: background 0.3s, color 0.3s;
         }
         
-        /* এখানে max-width তুলে দিয়ে width 100% করা হয়েছে যাতে স্ক্রিন জুড়ে থাকে */
         .container { 
             width: 100%; 
             min-height: 100vh;
@@ -45,7 +44,6 @@
             transition: background 0.3s;
         }
 
-        /* বড় স্ক্রিন বা ল্যাপটপের জন্য কন্টেইনার কিছুটা নির্দিষ্ট থাকবে, কিন্তু মোবাইল বা ডেস্কটপ মোডে ফুল স্ক্রিন নেবে */
         @media (min-width: 768px) {
             .container {
                 max-width: 900px;

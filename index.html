@@ -228,7 +228,6 @@
         </div>
         <div class="subtitle" id="sub-title">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
-        <!-- ফিল্টার ও ভাষা পরিবর্তন কন্ট্রোল প্যানেল -->
         <div class="controls">
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <div>
@@ -275,7 +274,6 @@
     <script>
         let allExamsData = []; 
 
-        // বহুভাষিক ডিকশনারি (Multilingual Dictionary)
         const translations = {
             "bn": {
                 "subtitle": "আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম",
@@ -350,7 +348,7 @@
             document.getElementById('btn-p-auth').innerText = t.phone_login;
             document.getElementById('btn-close').innerText = t.close;
             
-            filterExams(); // কার্ডগুলোর ভেতরের টেক্সট আপডেট করার জন্য রিলোড করা
+            filterExams();
         }
 
         function openLoginModal() {
@@ -421,7 +419,6 @@
         function filterExams() {
             const selectedCategory = document.getElementById('categoryFilter').value;
             const lang = document.getElementById('langSelect').value;
-            const t = translations[lang] || translations["bn"];
             const container = document.getElementById('exams-container');
             container.innerHTML = '';
 
@@ -429,26 +426,32 @@
 
             if (selectedCategory !== 'all') {
                 filteredData = allExamsData.filter(exam => {
-                    const name = (exam.exam_name || "").toLowerCase();
+                    const nameObj = exam.exam_name || {};
+                    const name = (typeof nameObj === 'object' ? (nameObj[lang] || nameObj['en'] || '') : nameObj).toLowerCase();
                     return name.includes(selectedCategory);
                 });
             }
 
             if(filteredData.length > 0) {
                 filteredData.forEach(exam => {
+                    let nameObj = exam.exam_name || {};
+                    let examName = typeof nameObj === 'object' ? (nameObj[lang] || nameObj['en'] || 'Exam Update') : nameObj;
+
+                    let statusObj = exam.status || {};
+                    let statusText = typeof statusObj === 'object' ? (statusObj[lang] || statusObj['en'] || 'Active') : statusObj;
+
                     let statusClass = 'status';
-                    let statusText = exam.status || 'Active';
-                    if(statusText.includes('🟢') || statusText.includes('🔔') || statusText.includes('New')) {
+                    if(String(statusText).includes('🟢') || String(statusText).includes('🔔') || String(statusText).includes('New')) {
                         statusClass += ' active';
                     }
                     
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.innerHTML = `
-                        <h3 class="exam-title">${exam.exam_name || 'Exam Update'}</h3>
+                        <h3 class="exam-title">${examName}</h3>
                         <div class="${statusClass}">Status: ${statusText}</div>
-                        <p><strong>${t.start_date}</strong> ${exam.form_fillup_start || 'N/A'}</p>
-                        <p><strong>${t.end_date}</strong> ${exam.form_fillup_end || 'N/A'}</p>
+                        <p><strong>Start:</strong> ${exam.form_fillup_start || 'N/A'}</p>
+                        <p><strong>End:</strong> ${exam.form_fillup_end || 'N/A'}</p>
                     `;
                     
                     const links = card.getElementsByTagName('a');
@@ -460,6 +463,7 @@
                     container.appendChild(card);
                 });
             } else {
+                const t = translations[lang] || translations["bn"];
                 container.innerHTML = `<p style="text-align:center; color: var(--sub-text); padding: 20px;">${t.no_data}</p>`;
             }
         }

@@ -29,19 +29,33 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: var(--bg-color); 
             margin: 0; 
-            padding: 15px; 
+            padding: 0; 
             color: var(--text-color); 
             transition: background 0.3s, color 0.3s;
         }
+        
+        /* এখানে max-width তুলে দিয়ে width 100% করা হয়েছে যাতে স্ক্রিন জুড়ে থাকে */
         .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
+            width: 100%; 
+            min-height: 100vh;
             background: var(--container-bg); 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            padding: 20px; 
+            box-sizing: border-box;
+            box-shadow: none; 
             transition: background 0.3s;
         }
+
+        /* বড় স্ক্রিন বা ল্যাপটপের জন্য কন্টেইনার কিছুটা নির্দিষ্ট থাকবে, কিন্তু মোবাইল বা ডেস্কটপ মোডে ফুল স্ক্রিন নেবে */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 900px;
+                margin: 20px auto;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                min-height: auto;
+            }
+        }
+
         .header-top {
             display: flex;
             justify-content: space-between;
@@ -61,7 +75,7 @@
             background: none;
             border: 2px solid #007bff;
             color: #007bff;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 13px;
@@ -94,7 +108,7 @@
             align-items: center; 
             margin-bottom: 20px; 
             background: var(--controls-bg);
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
@@ -116,7 +130,7 @@
             gap: 5px;
         }
         .refresh-btn:hover { background-color: #0056b3; }
-        .refresh-btn:active { transform: scale(0.95); }
+        
         .card { 
             border-left: 5px solid #007bff; 
             background: var(--card-bg); 
@@ -158,7 +172,7 @@
             text-decoration: underline;
         }
 
-        /* অথেন্টিকেশন মডাল পপআপ স্টাইল */
+        /* মডাল স্টাইল */
         .modal {
             display: none;
             position: fixed;
@@ -181,13 +195,14 @@
         .modal-content h3 { margin-bottom: 15px; color: #007bff; }
         .auth-option-btn {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 8px 0;
             border: none;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             color: white;
+            font-size: 14px;
         }
         .google-auth { background: #db4437; }
         .phone-auth { background: #28a745; }
@@ -230,7 +245,6 @@
     </div>
 
     <script>
-        // মডাল ওপেন ও ক্লোজ ফাংশন
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
         }
@@ -238,13 +252,11 @@
             document.getElementById('loginModal').style.display = 'none';
         }
 
-        // Google Authentication সিমুলেশন
         function authWithGoogle() {
             alert("Google Gmail সিকিউর অথেন্টিকেশন প্রসেস শুরু হচ্ছে...");
             closeLoginModal();
         }
 
-        // Mobile Number Authentication সিমুলেশন
         function authWithPhone() {
             let phone = prompt("আপনার ১০ ডিজিটের মোবাইল নম্বর দিন:");
             if(phone && phone.length >= 10) {
@@ -255,7 +267,6 @@
             }
         }
 
-        // ডার্ক মোড হ্যান্ডলার
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const themeBtn = document.getElementById('theme-toggle');

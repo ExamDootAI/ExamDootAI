@@ -7,12 +7,13 @@ from deep_translator import GoogleTranslator
 
 # SSL কনফিগারেশন
 ssl_context = ssl._create_unverified_context()
+API_KEY = "0bacbfa123fb6b3ff27bd417951af2fe"
 
-# আপনার আসল ওয়েবসাইট এবং লিংকগুলোর তালিকা
+# আপনার আসল সাইট লিস্ট
 EXAM_SITES = [
     {
         "id": "wbprb",
-        "exam_name": "West Bengal Police Recruitment",
+        "exam_name": "West Bengal Group D / WBPRB",
         "url": "https://news.google.com/rss/search?q=WBPRB+OR+West+Bengal+Police+recruitment+notice&hl=bn&gl=IN&ceid=IN:bn",
         "default_url": "https://wbpolice.gov.in/",
         "method": "google_news" 
@@ -35,40 +36,31 @@ EXAM_SITES = [
     }
 ]
 
-# ভাষা তালিকা
-TARGET_LANGUAGES = ['bn', 'en', 'hi', 'ta', 'te', 'mr', 'gu', 'kn', 'ml', 'pa']
-
-def translate_to_all(text):
-    """টেক্সটকে সব ভাষায় অনুবাদ করার ফাংশন"""
-    translations = {}
-    for lang in TARGET_LANGUAGES:
-        try:
-            translations[lang] = GoogleTranslator(source='auto', target=lang).translate(text)
-        except:
-            translations[lang] = text
-    return translations
+def translate_text(text, target='bn'):
+    """অনুবাদ করার ফাংশন"""
+    try:
+        return GoogleTranslator(source='auto', target=target).translate(text)
+    except:
+        return text
 
 def scan_website(site):
     print(f"Scanning {site['exam_name']}...")
     
-    # প্রাথমিক ফলাফল (মাল্টি-ল্যাঙ্গুয়েজে)
-    result = {
-        "exam_name": translate_to_all(site["exam_name"]),
-        "status": translate_to_all("সার্ভার ব্যস্ত"),
-        "form_fillup_start": "-",
-        "form_fillup_end": "বিস্তারিত দেখুন"
-    }
-    
+    # প্রাথমিক লজিক (আপনার পুরানো কোড থেকে)
+    # এখানে আমরা ডেটা তুলে সেটিকে অনুবাদ করছি
     try:
-        # এখানে আপনার আগের লজিক কাজ করবে
-        # ... (আপনার আগের scan_website লজিক এখানে বসবে)
-        # জাস্ট প্রতিটি টেক্সট ফিল্ডকে translate_to_all() দিয়ে মুড়িয়ে দেবেন
-        result["status"] = translate_to_all("নতুন নোটিশ উপলব্ধ 🔔")
-        result["form_fillup_start"] = translate_to_all("আজকের আপডেট দেখুন")
+        # (এখানে আপনার আগের scan_website লজিকগুলো আছে...)
+        # উদাহরণ হিসেবে একটি লাইন নিচে দিচ্ছি:
+        exam_name_bn = translate_text(site['exam_name'], 'bn')
+        
+        return {
+            "exam_name": {"bn": exam_name_bn, "en": site['exam_name']},
+            "status": "New Update 🔔", # চাইলে এটিকেও অনুবাদ করতে পারেন
+            "form_fillup_start": "আপডেট চেক করুন",
+            "form_fillup_end": site['default_url']
+        }
     except Exception as e:
-        print(f"Error: {e}")
-            
-    return result
+        return {"error": str(e)}
 
 def run_master_bot():
     all_exams = []

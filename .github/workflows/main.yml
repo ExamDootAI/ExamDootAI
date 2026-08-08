@@ -1,17 +1,13 @@
-name: ExamDootAI Auto-Scraper & Bot Scaler
+name: ExamDootAI Auto-Scraper
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটোমেটিক রান করবে
-  workflow_dispatch: # ম্যানুয়ালি রান করার অপশন
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        bot-id: [1, 2, 3] # একসাথে ৩টি আলাদা বট বা ইন্সট্যান্স ব্যাকগ্রাউন্ডে কাজ করবে
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -26,9 +22,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests deep-translator
 
-    - name: Run Scaled Scraper Bot
-      run: |
-        python scraper.py
+    - name: Run Scraper
+      run: python scraper.py
 
     - name: Commit and Push Updated Data
       env:
@@ -37,4 +32,4 @@ jobs:
         git config --global user.name "ExamDootAI-Bot"
         git config --global user.email "bot@examdootai.com"
         git add exams_data.json
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data from scaled bots" && git push)
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data" && git push)

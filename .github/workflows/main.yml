@@ -1,34 +1,42 @@
-name: Daily Exam Scraper Auto-Run
+name: ExamDootAI Auto-Scraper & Bot Scaler
 
 on:
   schedule:
-    - cron: '0 2,8,14,17 * * *'
-  workflow_dispatch: 
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটোমেটিক রান করবে
+  workflow_dispatch: # ম্যানুয়ালি রান করানোর অপশন
 
 jobs:
-  build:
+  run-scraper:
     runs-on: ubuntu-latest
+    
+    # কাজের চাপ বাড়লে কনকারেন্ট জব বা ম্যাট্রিক্স বট রান করার প্রস্তুতি
+    strategy:
+      matrix:
+        bot-id: [1, 2, 3] # একসাথে ৩টি আলাদা বট বা ইনস্ট্যান্স ব্যাকগ্রাউন্ডে কাজ করবে
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        pip install curl_cffi
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
-    - name: Run Scraper
-      run: python scraper.py
+      - name: Run Scaled Scraper Bot
+        run: |
+          python scraper.py
 
-    - name: Commit and Push changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add exams_data.json
-        git commit -m "Auto-update exam data via Cron Timer" || echo "No changes to commit"
-        git push
+      - name: Commit and Push Updated Data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "ExamDootAI-Bot"
+          git config --global user.email "bot@examdootai.com"
+          git add exams_data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data from scaled bots" && git push)

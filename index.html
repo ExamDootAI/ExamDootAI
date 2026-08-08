@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamDootAI - Government Exam Alerts</title>
     <style>
-        :root { --bg-color: #eef2f3; --container-bg: #ffffff; --text-color: #333333; --card-bg: #fafbfc; --sub-text: #666666; }
+        :root { --bg-color: #eef2f3; --container-bg: #ffffff; --text-color: #333333; --card-bg: #fafbfc; }
         body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-color); }
         .container { max-width: 600px; margin: 0 auto; background: var(--container-bg); padding: 20px; border-radius: 12px; }
         .card { border-left: 5px solid #007bff; background: var(--card-bg); margin-bottom: 20px; padding: 18px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .exam-title { font-size: 18px; color: #007bff; margin-bottom: 10px; }
         .status { background: #e6f4ea; color: #1e8e3e; padding: 4px 10px; border-radius: 5px; font-size: 13px; display: inline-block; margin-bottom: 10px; }
-        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     </style>
 </head>
 <body>
@@ -49,19 +49,25 @@
             container.innerHTML = '';
 
             allExamsData.forEach(exam => {
-                // লজিক: যদি ডাটা অবজেক্ট হয় তবে ল্যাংগুয়েজ কি দিয়ে খুঁজবে, না হলে সরাসরি টেক্সট নিবে
-                const name = (exam.exam_name && typeof exam.exam_name === 'object') ? (exam.exam_name[lang] || exam.exam_name['en']) : exam.exam_name;
-                const status = (exam.status && typeof exam.status === 'object') ? (exam.status[lang] || exam.status['en']) : exam.status;
-                const start = (exam.form_fillup_start && typeof exam.form_fillup_start === 'object') ? (exam.form_fillup_start[lang] || exam.form_fillup_start['en']) : exam.form_fillup_start;
-                const end = (exam.form_fillup_end && typeof exam.form_fillup_end === 'object') ? (exam.form_fillup_end[lang] || exam.form_fillup_end['en']) : exam.form_fillup_end;
+                // ১. পরীক্ষার নাম (ল্যাংগুয়েজ অনুযায়ী)
+                const name = (typeof exam.exam_name === 'object') ? (exam.exam_name[lang] || exam.exam_name['en']) : exam.exam_name;
+                
+                // ২. স্ট্যাটাস, শুরু এবং শেষ (এগুলো আপনার বর্তমান JSON অনুযায়ী সরাসরি আসবে)
+                const status = exam.status; 
+                const start = exam.form_fillup_start;
+                const end = exam.form_fillup_end;
+
+                // ৩. লেবেল সেট করা (ভাষার ওপর ভিত্তি করে)
+                const startLabel = (lang === 'bn') ? 'শুরু:' : 'Start:';
+                const endLabel = (lang === 'bn') ? 'শেষ:' : 'End:';
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <h3 class="exam-title">${name}</h3>
                     <div class="status">${status}</div>
-                    <p><strong>শুরু:</strong> ${start}</p>
-                    <p><strong>শেষ:</strong> ${end}</p>
+                    <p><strong>${startLabel}</strong> ${start}</p>
+                    <p><strong>${endLabel}</strong> ${end}</p>
                 `;
                 container.appendChild(card);
             });
@@ -70,4 +76,3 @@
     </script>
 </body>
 </html>
-

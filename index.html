@@ -39,13 +39,15 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
         .container { 
-            max-width: 600px; 
+            max-width: 1000px; /* ডেস্কটপ সাইজের জন্য চওড়া বাড়ানো হলো */
+            width: 100%;
             margin: 0 auto; 
             background: var(--container-bg); 
             padding: 30px; 
             border-radius: 20px; 
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); 
             border: 1px solid var(--border-color);
+            box-sizing: border-box;
         }
         .header-top {
             display: flex;
@@ -207,7 +209,6 @@
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
             <div class="header-btns">
-                <!-- ভাষা নির্বাচন ড্রপডাউন (ভারতীয় পতাকা সহ) -->
                 <select class="lang-select" id="lang-switch" onchange="changeLanguage()">
                     <option value="bn">বাংলা 🇮🇳</option>
                     <option value="en">English 🇬🇧</option>

@@ -2,478 +2,72 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamDootAI - Government Exam Alerts</title>
     <style>
-        :root {
-            --bg-color: #eef2f3;
-            --container-bg: #ffffff;
-            --text-color: #333333;
-            --card-bg: #fafbfc;
-            --controls-bg: #f8f9fa;
-            --border-color: #e9ecef;
-            --sub-text: #666666;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --card-bg: #2a2a2a;
-            --controls-bg: #2d2d2d;
-            --border-color: #3d3d3d;
-            --sub-text: #b0b0b0;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            margin: 0; 
-            padding: 0; 
-            color: var(--text-color); 
-            transition: background 0.3s, color 0.3s;
-        }
-        
-        .container { 
-            width: 100%; 
-            min-height: 100vh;
-            background: var(--container-bg); 
-            padding: 20px; 
-            box-sizing: border-box;
-            box-shadow: none; 
-            transition: background 0.3s;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                max-width: 900px;
-                margin: 20px auto;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                min-height: auto;
-            }
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        h1 { 
-            color: #007bff; 
-            margin: 0; 
-            font-size: 24px;
-        }
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .theme-btn, .login-btn {
-            background: none;
-            border: 2px solid #007bff;
-            color: #007bff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .login-btn {
-            background: #007bff;
-            color: white;
-        }
-        .theme-btn:hover {
-            background: #007bff;
-            color: white;
-        }
-        .login-btn:hover {
-            background: #0056b3;
-            border-color: #0056b3;
-        }
-        .subtitle { 
-            color: var(--sub-text); 
-            margin-top: 5px;
-            margin-bottom: 20px; 
-            font-size: 15px; 
-            border-bottom: 2px solid #007bff; 
-            padding-bottom: 15px;
-        }
-        .controls { 
-            display: flex; 
-            flex-wrap: wrap;
-            justify-content: space-between; 
-            align-items: center; 
-            gap: 10px;
-            margin-bottom: 20px; 
-            background: var(--controls-bg);
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        .filter-select {
-            padding: 7px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--container-bg);
-            color: var(--text-color);
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .last-updated {
-            font-size: 13px;
-            color: var(--sub-text);
-        }
-        .refresh-btn { 
-            background-color: #007bff; 
-            color: white; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.3s;
-        }
-        .refresh-btn:hover { background-color: #0056b3; }
-        
-        .card { 
-            border-left: 5px solid #007bff; 
-            background: var(--card-bg); 
-            margin-bottom: 20px; 
-            padding: 18px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03); 
-            transition: transform 0.2s, background 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        .exam-title { 
-            font-size: 18px; 
-            color: #007bff; 
-            font-weight: bold; 
-            margin-top: 0; 
-            margin-bottom: 12px; 
-        }
-        .status { 
-            background: #ffebeb; 
-            color: #d32f2f; 
-            padding: 4px 10px; 
-            border-radius: 5px; 
-            font-weight: bold; 
-            font-size: 13px; 
-            display: inline-block; 
-            margin-bottom: 12px; 
-        }
-        .status.active { background: #e6f4ea; color: #1e8e3e; }
-        p { margin: 8px 0; font-size: 15px; line-height: 1.5; color: var(--text-color); }
-        
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background: var(--container-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .modal-content h3 { margin-bottom: 15px; color: #007bff; }
-        .auth-option-btn {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-            font-size: 14px;
-        }
-        .google-auth { background: #db4437; }
-        .phone-auth { background: #28a745; }
-        .close-modal {
-            background: #6c757d;
-            margin-top: 10px;
-        }
+        :root { --bg-color: #eef2f3; --container-bg: #ffffff; --text-color: #333333; --card-bg: #fafbfc; --sub-text: #666666; }
+        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-color); }
+        .container { max-width: 600px; margin: 0 auto; background: var(--container-bg); padding: 20px; border-radius: 12px; }
+        .card { border-left: 5px solid #007bff; background: var(--card-bg); margin-bottom: 20px; padding: 18px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .exam-title { font-size: 18px; color: #007bff; margin-bottom: 10px; }
+        .status { background: #e6f4ea; color: #1e8e3e; padding: 4px 10px; border-radius: 5px; font-size: 13px; display: inline-block; margin-bottom: 10px; }
+        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header-top">
-            <h1>ExamDootAI 🚀</h1>
-            <div class="header-actions">
-                <button class="login-btn" onclick="openLoginModal()" id="btn-login">লগইন</button>
-                <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 মোড</button>
-            </div>
-        </div>
-        <div class="subtitle" id="sub-title">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
-        
+        <h1>ExamDootAI 🚀</h1>
         <div class="controls">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <div>
-                    <label id="lbl-cat" style="font-size: 12px; font-weight: bold; display: block;">ক্যাটাগরি:</label>
-                    <select id="categoryFilter" class="filter-select" onchange="filterExams()">
-                        <option value="all" id="opt-all">সকল পরীক্ষা</option>
-                        <option value="wbprb">WBPRB / পুলিশ</option>
-                        <option value="wbpsc">WBPSC</option>
-                        <option value="ssc">SSC</option>
-                        <option value="rrb">RRB / রেলওয়ে</option>
-                    </select>
-                </div>
-                <div>
-                    <label id="lbl-lang" style="font-size: 12px; font-weight: bold; display: block;">ভাষা (Language):</label>
-                    <select id="langSelect" class="filter-select" onchange="changeLanguage()">
-                        <option value="bn">বাংলা (Bengali)</option>
-                        <option value="en">English</option>
-                        <option value="hi">हिन्दी (Hindi)</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <span class="last-updated" id="last-updated">লোড হচ্ছে...</span>
-                <button class="refresh-btn" onclick="fetchData()" id="btn-refresh" style="display:inline-block; margin-left: 10px;">Refresh 🔄</button>
-            </div>
+            <select id="langSelect" onchange="filterExams()">
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="en">English</option>
+            </select>
+            <button onclick="fetchData()">Refresh 🔄</button>
         </div>
-
-        <div id="exams-container">
-            <!-- ডায়নামিক ডেটা এখানে আসবে -->
-        </div>
-    </div>
-
-    <!-- লগইন পপআপ মডাল -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title">প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন</h3>
-            <p id="modal-desc" style="font-size: 13px; margin-bottom: 15px;">আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।</p>
-            <button class="auth-option-btn google-auth" onclick="authWithGoogle()" id="btn-g-auth">🔵 Google Gmail দিয়ে লগইন</button>
-            <button class="auth-option-btn phone-auth" onclick="authWithPhone()" id="btn-p-auth">🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন</button>
-            <button class="auth-option-btn close-modal" onclick="closeLoginModal()" id="btn-close">বন্ধ করুন</button>
-        </div>
+        <div id="exams-container"></div>
     </div>
 
     <script>
-        let allExamsData = []; 
+        let allExamsData = [];
 
-        const translations = {
-            "bn": {
-                "subtitle": "আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম",
-                "login": "লগইন",
-                "category": "ক্যাটাগরি:",
-                "all_exams": "সকল পরীক্ষা",
-                "language": "ভাষা (Language):",
-                "last_update": "শেষ আপডেট:",
-                "refresh": "Refresh 🔄",
-                "start_date": "ফর্ম ফিলাপ শুরু:",
-                "end_date": "ফর্ম ফিলাপ শেষ:",
-                "no_data": "এই ক্যাটাগরিতে বর্তমানে কোনো নোটিশ নেই!",
-                "modal_title": "প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন",
-                "modal_desc": "আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।",
-                "google_login": "🔵 Google Gmail দিয়ে লগইন",
-                "phone_login": "🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন",
-                "close": "বন্ধ করুন"
-            },
-            "en": {
-                "subtitle": "Your Automated Exam Alert System",
-                "login": "Login",
-                "category": "Category:",
-                "all_exams": "All Exams",
-                "language": "Language:",
-                "last_update": "Last Updated:",
-                "refresh": "Refresh 🔄",
-                "start_date": "Form Fill-up Start:",
-                "end_date": "Form Fill-up End:",
-                "no_data": "No notices available in this category currently!",
-                "modal_title": "Sign In / Register",
-                "modal_desc": "Login to keep your exam alerts secure.",
-                "google_login": "🔵 Login with Google Gmail",
-                "phone_login": "🟢 Login with Mobile Number (OTP)",
-                "close": "Close"
-            },
-            "hi": {
-                "subtitle": "आपकी स्वचालित परीक्षा अलर्ट प्रणाली",
-                "login": "लॉग इन",
-                "category": "श्रेणी:",
-                "all_exams": "सभी परीक्षाएं",
-                "language": "भाषा (Language):",
-                "last_update": "अंतिम अपडेट:",
-                "refresh": "रीफ्रेश 🔄",
-                "start_date": "फॉर्म भरने की शुरुआत:",
-                "end_date": "फॉर्म भरने की अंतिम तिथि:",
-                "no_data": "इस श्रेणी में वर्तमान में कोई सूचना उपलब्ध नहीं है!",
-                "modal_title": "साइन इन / रजिस्टर करें",
-                "modal_desc": "अपने परीक्षा अलर्ट को सुरक्षित रखने के लिए लॉग इन करें।",
-                "google_login": "🔵 Google Gmail से लॉगिन करें",
-                "phone_login": "🟢 मोबाइल नंबर (OTP) से लॉगिन करें",
-                "close": "बंद करें"
-            }
-        };
-
-        function changeLanguage() {
-            const lang = document.getElementById('langSelect').value;
-            localStorage.setItem('selectedLang', lang);
-            updateUITexts(lang);
-        }
-
-        function updateUITexts(lang) {
-            const t = translations[lang] || translations["bn"];
-            document.getElementById('sub-title').innerText = t.subtitle;
-            document.getElementById('btn-login').innerText = t.login;
-            document.getElementById('lbl-cat').innerText = t.category;
-            document.getElementById('opt-all').innerText = t.all_exams;
-            document.getElementById('lbl-lang').innerText = t.language;
-            document.getElementById('btn-refresh').innerText = t.refresh;
-            document.getElementById('modal-title').innerText = t.modal_title;
-            document.getElementById('modal-desc').innerText = t.modal_desc;
-            document.getElementById('btn-g-auth').innerText = t.google_login;
-            document.getElementById('btn-p-auth').innerText = t.phone_login;
-            document.getElementById('btn-close').innerText = t.close;
-            
-            filterExams();
-        }
-
-        function openLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-        function authWithGoogle() {
-            alert("Google Gmail Secure Authentication initiated...");
-            closeLoginModal();
-        }
-        function authWithPhone() {
-            let phone = prompt("Enter your 10-digit mobile number:");
-            if(phone && phone.length >= 10) {
-                alert("OTP sent to your number: " + phone);
-                closeLoginModal();
-            } else if(phone) {
-                alert("Please enter a valid mobile number!");
-            }
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const themeBtn = document.getElementById('theme-toggle');
-            if (currentTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeBtn.innerHTML = '🌙 মোড';
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '☀️ মোড';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        if (savedTheme === 'dark') {
-            document.getElementById('theme-toggle').innerHTML = '☀️ মোড';
-        }
-
-        function fetchData() {
+        async function fetchData() {
             const container = document.getElementById('exams-container');
-            const lastUpdated = document.getElementById('last-updated');
-            container.innerHTML = '<p style="text-align:center; font-weight:bold; color:#007bff;">Loading data... ⏳</p>';
-            
-            const url = 'exams_data.json?t=' + new Date().getTime();
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    allExamsData = Array.isArray(data) ? data : (data.exams || []);
-                    filterExams();
-                    
-                    const now = new Date();
-                    let timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    const lang = document.getElementById('langSelect').value;
-                    const t = translations[lang] || translations["bn"];
-                    lastUpdated.innerHTML = `<strong>${t.last_update}</strong> ${timeString}`;
-                })
-                .catch(error => {
-                    container.innerHTML = '<p style="color:red; text-align:center; font-weight:bold;">Error loading data! Please try again later.</p>';
-                    console.error('Error:', error);
-                });
+            container.innerHTML = 'লোড হচ্ছে...';
+            try {
+                const response = await fetch('exams_data.json?t=' + new Date().getTime());
+                const data = await response.json();
+                allExamsData = data.exams || [];
+                filterExams();
+            } catch (e) {
+                container.innerHTML = 'ডেটা লোড করতে সমস্যা হয়েছে।';
+            }
         }
 
         function filterExams() {
-            const selectedCategory = document.getElementById('categoryFilter').value;
             const lang = document.getElementById('langSelect').value;
             const container = document.getElementById('exams-container');
             container.innerHTML = '';
 
-            let filteredData = allExamsData;
+            allExamsData.forEach(exam => {
+                // লজিক: যদি ডাটা অবজেক্ট হয় তবে ল্যাংগুয়েজ কি দিয়ে খুঁজবে, না হলে সরাসরি টেক্সট নিবে
+                const name = (exam.exam_name && typeof exam.exam_name === 'object') ? (exam.exam_name[lang] || exam.exam_name['en']) : exam.exam_name;
+                const status = (exam.status && typeof exam.status === 'object') ? (exam.status[lang] || exam.status['en']) : exam.status;
+                const start = (exam.form_fillup_start && typeof exam.form_fillup_start === 'object') ? (exam.form_fillup_start[lang] || exam.form_fillup_start['en']) : exam.form_fillup_start;
+                const end = (exam.form_fillup_end && typeof exam.form_fillup_end === 'object') ? (exam.form_fillup_end[lang] || exam.form_fillup_end['en']) : exam.form_fillup_end;
 
-            if (selectedCategory !== 'all') {
-                filteredData = allExamsData.filter(exam => {
-                    const nameObj = exam.exam_name || {};
-                    const name = (typeof nameObj === 'object' ? (nameObj[lang] || nameObj['en'] || '') : nameObj).toLowerCase();
-                    return name.includes(selectedCategory);
-                });
-            }
-
-            if(filteredData.length > 0) {
-                filteredData.forEach(exam => {
-                    let nameObj = exam.exam_name || {};
-                    let examName = typeof nameObj === 'object' ? (nameObj[lang] || nameObj['en'] || 'Exam Update') : nameObj;
-
-                    let statusObj = exam.status || {};
-                    let statusText = typeof statusObj === 'object' ? (statusObj[lang] || statusObj['en'] || 'Active') : statusObj;
-
-                    let statusClass = 'status';
-                    if(String(statusText).includes('🟢') || String(statusText).includes('🔔') || String(statusText).includes('New')) {
-                        statusClass += ' active';
-                    }
-                    
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <h3 class="exam-title">${examName}</h3>
-                        <div class="${statusClass}">Status: ${statusText}</div>
-                        <p><strong>Start:</strong> ${exam.form_fillup_start || 'N/A'}</p>
-                        <p><strong>End:</strong> ${exam.form_fillup_end || 'N/A'}</p>
-                    `;
-                    
-                    const links = card.getElementsByTagName('a');
-                    for (let link of links) {
-                        link.setAttribute('target', '_blank');
-                        link.setAttribute('rel', 'noopener noreferrer');
-                    }
-
-                    container.appendChild(card);
-                });
-            } else {
-                const t = translations[lang] || translations["bn"];
-                container.innerHTML = `<p style="text-align:center; color: var(--sub-text); padding: 20px;">${t.no_data}</p>`;
-            }
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3 class="exam-title">${name}</h3>
+                    <div class="status">${status}</div>
+                    <p><strong>শুরু:</strong> ${start}</p>
+                    <p><strong>শেষ:</strong> ${end}</p>
+                `;
+                container.appendChild(card);
+            });
         }
-
-        window.onload = function() {
-            const savedLang = localStorage.getItem('selectedLang') || 'bn';
-            document.getElementById('langSelect').value = savedLang;
-            updateUITexts(savedLang);
-            fetchData();
-        };
+        window.onload = fetchData;
     </script>
 </body>
 </html>
+

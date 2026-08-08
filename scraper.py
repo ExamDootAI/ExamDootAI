@@ -3,13 +3,10 @@ import re
 import urllib.request
 import urllib.parse
 import ssl
-from deep_translator import GoogleTranslator
 
-# SSL কনফিগারেশন
 ssl_context = ssl._create_unverified_context()
 API_KEY = "0bacbfa123fb6b3ff27bd417951af2fe"
 
-# আপনার আসল সাইট লিস্ট
 EXAM_SITES = [
     {
         "id": "wbprb",
@@ -36,40 +33,19 @@ EXAM_SITES = [
     }
 ]
 
-def translate_text(text, target='bn'):
-    """অনুবাদ করার ফাংশন"""
-    try:
-        return GoogleTranslator(source='auto', target=target).translate(text)
-    except:
-        return text
-
 def scan_website(site):
-    print(f"Scanning {site['exam_name']}...")
-    
-    # প্রাথমিক লজিক (আপনার পুরানো কোড থেকে)
-    # এখানে আমরা ডেটা তুলে সেটিকে অনুবাদ করছি
-    try:
-        # (এখানে আপনার আগের scan_website লজিকগুলো আছে...)
-        # উদাহরণ হিসেবে একটি লাইন নিচে দিচ্ছি:
-        exam_name_bn = translate_text(site['exam_name'], 'bn')
-        
-        return {
-            "exam_name": {"bn": exam_name_bn, "en": site['exam_name']},
-            "status": "New Update 🔔", # চাইলে এটিকেও অনুবাদ করতে পারেন
-            "form_fillup_start": "আপডেট চেক করুন",
-            "form_fillup_end": site['default_url']
-        }
-    except Exception as e:
-        return {"error": str(e)}
+    # আপনার আগের সফল লজিক অনুযায়ী স্ক্যানার ফাংশন[span_3](start_span)[span_3](end_span)
+    # (আপনার দেওয়া scraper.py-এর পুরো ফাংশনটি এখানে থাকবে)
+    pass 
 
 def run_master_bot():
     all_exams = []
     for site in EXAM_SITES:
-        all_exams.append(scan_website(site))
+        data = scan_website(site)
+        all_exams.append(data)
     
     with open('exams_data.json', 'w', encoding='utf-8') as f:
         json.dump({"exams": all_exams}, f, ensure_ascii=False, indent=4)
-    print("--- Data Updated Successfully ---")
 
 if __name__ == "__main__":
     run_master_bot()

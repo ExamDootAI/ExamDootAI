@@ -52,20 +52,33 @@
             margin: 0; 
             font-size: 24px;
         }
-        .theme-btn {
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .theme-btn, .login-btn {
             background: none;
             border: 2px solid #007bff;
             color: #007bff;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             transition: 0.3s;
+        }
+        .login-btn {
+            background: #007bff;
+            color: white;
         }
         .theme-btn:hover {
             background: #007bff;
             color: white;
+        }
+        .login-btn:hover {
+            background: #0056b3;
+            border-color: #0056b3;
         }
         .subtitle { 
             color: var(--sub-text); 
@@ -136,7 +149,6 @@
         .status.active { background: #e6f4ea; color: #1e8e3e; }
         p { margin: 8px 0; font-size: 15px; line-height: 1.5; color: var(--text-color); }
         
-        /* লিঙ্কের ডিজাইন সুন্দর করার জন্য */
         a {
             color: #007bff;
             text-decoration: none;
@@ -145,13 +157,54 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* অথেন্টিকেশন মডাল পপআপ স্টাইল */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--container-bg);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 { margin-bottom: 15px; color: #007bff; }
+        .auth-option-btn {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+        .google-auth { background: #db4437; }
+        .phone-auth { background: #28a745; }
+        .close-modal {
+            background: #6c757d;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
-            <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 ডার্ক মোড</button>
+            <div class="header-actions">
+                <button class="login-btn" onclick="openLoginModal()">লগইন / সাইন-আপ</button>
+                <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 মোড</button>
+            </div>
         </div>
         <div class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
@@ -165,27 +218,62 @@
         </div>
     </div>
 
+    <!-- লগইন পপআপ মডাল -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3>প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন</h3>
+            <p style="font-size: 13px; margin-bottom: 15px;">আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।</p>
+            <button class="auth-option-btn google-auth" onclick="authWithGoogle()">🔵 Google Gmail দিয়ে লগইন</button>
+            <button class="auth-option-btn phone-auth" onclick="authWithPhone()">🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন</button>
+            <button class="auth-option-btn close-modal" onclick="closeLoginModal()">বন্ধ করুন</button>
+        </div>
+    </div>
+
     <script>
+        // মডাল ওপেন ও ক্লোজ ফাংশন
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        // Google Authentication সিমুলেশন
+        function authWithGoogle() {
+            alert("Google Gmail সিকিউর অথেন্টিকেশন প্রসেস শুরু হচ্ছে...");
+            closeLoginModal();
+        }
+
+        // Mobile Number Authentication সিমুলেশন
+        function authWithPhone() {
+            let phone = prompt("আপনার ১০ ডিজিটের মোবাইল নম্বর দিন:");
+            if(phone && phone.length >= 10) {
+                alert("আপনার নম্বরে একটি ওটিপি (OTP) পাঠানো হয়েছে: " + phone);
+                closeLoginModal();
+            } else if(phone) {
+                alert("দয়া করে সঠিক মোবাইল নম্বর প্রদান করুন!");
+            }
+        }
+
         // ডার্ক মোড হ্যান্ডলার
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const themeBtn = document.getElementById('theme-toggle');
             if (currentTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'light');
-                themeBtn.innerHTML = '🌙 ডার্ক মোড';
+                themeBtn.innerHTML = '🌙 মোড';
                 localStorage.setItem('theme', 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '☀️ লাইট মোড';
+                themeBtn.innerHTML = '☀️ মোড';
                 localStorage.setItem('theme', 'dark');
             }
         }
 
-        // সেভ করা থিম লোড করা
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         if (savedTheme === 'dark') {
-            document.getElementById('theme-toggle').innerHTML = '☀️ লাইট মোড';
+            document.getElementById('theme-toggle').innerHTML = '☀️ মোড';
         }
 
         function fetchData() {
@@ -215,7 +303,6 @@
                                 <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
                             `;
                             
-                            // সিকিউরিটি ও প্রাইভেসি এরর এড়ানোর জন্য সব লিঙ্কে সেফটি অ্যাট্রিবিউট যোগ করা
                             const links = card.getElementsByTagName('a');
                             for (let link of links) {
                                 link.setAttribute('target', '_blank');

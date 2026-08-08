@@ -1,28 +1,52 @@
 {
-    "exams": [
-        {
-            "exam_name": "West Bengal Group D / WBPRB",
-            "status": "New Update 🔔",
-            "form_fillup_start": "আপডেট: Police Job News: পশ্চিমবঙ্গ পুলিশে ১ লাখ চাকরি, নিয়োগ কীভাবে...",
-            "form_fillup_end": "বিস্তারিত জানতে <a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
-        },
-        {
-            "exam_name": "WBPSC Official Website",
-            "status": "New Update 🔔",
-            "form_fillup_start": "নোটিশ: &nbsp;Advertisement/ Announcement",
-            "form_fillup_end": "বিস্তারিত জানতে <a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
-        },
-        {
-            "exam_name": "SSC (Staff Selection Commission)",
-            "status": "Site Active 🟢",
-            "form_fillup_start": "আজ নতুন কোনো নোটিশ নেই",
-            "form_fillup_end": "<a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ওয়েবসাইট</a> চেক করুন"
-        },
-        {
-            "exam_name": "RRB (Railway Recruitment Board)",
-            "status": "নতুন আপডেটের খোঁজ চলছে 🚂",
-            "form_fillup_start": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>",
-            "form_fillup_end": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>"
-        }
-    ]
+  "exams": [
+    {
+      "exam_name": "West Bengal Group D / WBPRB",
+      "status": "New Update 🔔",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://prb.wb.gov.in'>prb.wb.gov.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://prb.wb.gov.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "WBPSC (West Bengal Public Service Commission)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://wbpsc.gov.in'>wbpsc.gov.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://wbpsc.gov.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "WBBPE (Primary TET / Education)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://wbbpe.org'>wbbpe.org</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://wbbpe.org' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://wbhrb.in'>wbhrb.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://wbhrb.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "SSC (Staff Selection Commission)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://ssc.gov.in'>ssc.gov.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://ssc.gov.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "UPSC (Union Public Service Commission)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://upsc.gov.in'>upsc.gov.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://upsc.gov.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "RRB (Railway Recruitment Board)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://indianrailways.gov.in'>indianrailways.gov.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://indianrailways.gov.in' target='_blank'>ক্লিক করুন</a>"
+    },
+    {
+      "exam_name": "IBPS (Banking - PO & Clerk)",
+      "status": "Site Active 🟢",
+      "form_fillup_start": "অফিশিয়াল সাইট: <a href='https://ibps.in'>ibps.in</a>",
+      "form_fillup_end": "বিস্তারিত জানতে <a href='https://ibps.in' target='_blank'>ক্লিক করুন</a>"
+    }
+  ]
 }

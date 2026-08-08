@@ -3,40 +3,38 @@ name: ExamDootAI Auto-Scraper & Bot Scaler
 on:
   schedule:
     - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটোমেটিক রান করবে
-  workflow_dispatch: # ম্যানুয়ালি রান করানোর অপশন
+  workflow_dispatch: # ম্যানুয়ালি রান করার অপশন
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
-    
-    # কাজের চাপ বাড়লে কনকারেন্ট জব বা ম্যাট্রিক্স বট রান করার প্রস্তুতি
     strategy:
       matrix:
-        bot-id: [1, 2, 3] # একসাথে ৩টি আলাদা বট বা ইনস্ট্যান্স ব্যাকগ্রাউন্ডে কাজ করবে
+        bot-id: [1, 2, 3] # একসাথে ৩টি আলাদা বট বা ইন্সট্যান্স ব্যাকগ্রাউন্ডে কাজ করবে
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests deep-translator
 
-      - name: Run Scaled Scraper Bot
-        run: |
-          python scraper.py
+    - name: Run Scaled Scraper Bot
+      run: |
+        python scraper.py
 
-      - name: Commit and Push Updated Data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "ExamDootAI-Bot"
-          git config --global user.email "bot@examdootai.com"
-          git add exams_data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data from scaled bots" && git push)
+    - name: Commit and Push Updated Data
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name "ExamDootAI-Bot"
+        git config --global user.email "bot@examdootai.com"
+        git add exams_data.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data from scaled bots" && git push)

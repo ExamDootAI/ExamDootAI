@@ -4,43 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamDootAI - Government Exam Alerts</title>
+    <!-- প্রিমিয়াম ফন্ট যুক্ত করা হলো -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #eef2f3;
+            --bg-color: #f8fafc;
             --container-bg: #ffffff;
-            --text-color: #333333;
-            --card-bg: #fafbfc;
-            --controls-bg: #f8f9fa;
-            --border-color: #e9ecef;
-            --sub-text: #666666;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --controls-bg: #f1f5f9;
+            --border-color: #e2e8f0;
+            --sub-text: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
         }
 
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --card-bg: #2a2a2a;
-            --controls-bg: #2d2d2d;
-            --border-color: #3d3d3d;
-            --sub-text: #b0b0b0;
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --controls-bg: #334155;
+            --border-color: #334155;
+            --sub-text: #94a3b8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
         }
 
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif; 
             background-color: var(--bg-color); 
             margin: 0; 
-            padding: 15px; 
+            padding: 20px; 
             color: var(--text-color); 
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         .container { 
             max-width: 600px; 
             margin: 0 auto; 
             background: var(--container-bg); 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            transition: background 0.3s;
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); 
+            transition: background 0.3s ease;
+            border: 1px solid var(--border-color);
         }
         .header-top {
             display: flex;
@@ -48,99 +55,107 @@
             align-items: center;
         }
         h1 { 
-            color: #007bff; 
+            color: var(--primary); 
             margin: 0; 
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         .theme-btn {
-            background: none;
-            border: 2px solid #007bff;
-            color: #007bff;
-            padding: 5px 10px;
-            border-radius: 20px;
+            background: var(--controls-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: 0.3s;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
         .theme-btn:hover {
-            background: #007bff;
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         .subtitle { 
             color: var(--sub-text); 
-            margin-top: 5px;
-            margin-bottom: 20px; 
-            font-size: 15px; 
-            border-bottom: 2px solid #007bff; 
+            margin-top: 8px;
+            margin-bottom: 24px; 
+            font-size: 14px; 
+            border-bottom: 1px solid var(--border-color); 
             padding-bottom: 15px;
         }
         .controls { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 20px; 
+            margin-bottom: 24px; 
             background: var(--controls-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
         }
         .last-updated {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--sub-text);
+            line-height: 1.4;
         }
         .refresh-btn { 
-            background-color: #007bff; 
+            background-color: var(--primary); 
             color: white; 
             border: none; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
+            padding: 9px 18px; 
+            border-radius: 8px; 
             cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-weight: 600; 
+            font-size: 13px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
         }
-        .refresh-btn:hover { background-color: #0056b3; }
-        .refresh-btn:active { transform: scale(0.95); }
+        .refresh-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        .refresh-btn:active { transform: translateY(0); }
         .card { 
-            border-left: 5px solid #007bff; 
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary); 
             background: var(--card-bg); 
             margin-bottom: 20px; 
-            padding: 18px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03); 
-            transition: transform 0.2s, background 0.3s;
+            padding: 20px; 
+            border-radius: 14px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); 
+            transition: all 0.25s ease;
         }
         .card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
         }
         .exam-title { 
-            font-size: 18px; 
-            color: #007bff; 
-            font-weight: bold; 
+            font-size: 17px; 
+            color: var(--text-color); 
+            font-weight: 700; 
             margin-top: 0; 
-            margin-bottom: 12px; 
+            margin-bottom: 10px; 
         }
         .status { 
-            background: #ffebeb; 
-            color: #d32f2f; 
-            padding: 4px 10px; 
-            border-radius: 5px; 
-            font-weight: bold; 
-            font-size: 13px; 
+            background: #fef2f2; 
+            color: #dc2626; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-weight: 600; 
+            font-size: 12px; 
             display: inline-block; 
             margin-bottom: 12px; 
+            letter-spacing: 0.3px;
         }
-        .status.active { background: #e6f4ea; color: #1e8e3e; }
-        p { margin: 8px 0; font-size: 15px; line-height: 1.5; color: var(--text-color); }
+        .status.active { background: #f0fdf4; color: #16a34a; }
+        p { margin: 8px 0; font-size: 14px; line-height: 1.6; color: var(--sub-text); }
+        p strong { color: var(--text-color); font-weight: 600; }
         
-        /* লিঙ্কের ডিজাইন সুন্দর করার জন্য */
         a {
-            color: #007bff;
+            color: var(--primary);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: color 0.2s;
         }
         a:hover {
             text-decoration: underline;
@@ -166,7 +181,6 @@
     </div>
 
     <script>
-        // ডার্ক মোড হ্যান্ডলার
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const themeBtn = document.getElementById('theme-toggle');
@@ -181,7 +195,6 @@
             }
         }
 
-        // সেভ করা থিম লোড করা
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         if (savedTheme === 'dark') {
@@ -191,7 +204,7 @@
         function fetchData() {
             const container = document.getElementById('exams-container');
             const lastUpdated = document.getElementById('last-updated');
-            container.innerHTML = '<p style="text-align:center; font-weight:bold; color:#007bff;">নতুন ডেটা লোড হচ্ছে... ⏳</p>';
+            container.innerHTML = '<p style="text-align:center; font-weight:600; color:var(--primary); padding: 20px;">নতুন ডেটা লোড হচ্ছে... ⏳</p>';
             
             const url = 'exams_data.json?t=' + new Date().getTime();
             
@@ -215,7 +228,6 @@
                                 <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
                             `;
                             
-                            // সিকিউরিটি ও প্রাইভেসি এরর এড়ানোর জন্য সব লিঙ্কে সেফটি অ্যাট্রিবিউট যোগ করা
                             const links = card.getElementsByTagName('a');
                             for (let link of links) {
                                 link.setAttribute('target', '_blank');
@@ -227,13 +239,13 @@
                         
                         const now = new Date();
                         let timeString = now.toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        lastUpdated.innerHTML = `<strong>শেষ আপডেট:</strong><br>${timeString}`;
+                        lastUpdated.innerHTML = `<strong>শেষ আপডেট:</strong> ${timeString}`;
                     } else {
                         container.innerHTML = '<p style="text-align:center;">কোনো ডেটা পাওয়া যায়নি!</p>';
                     }
                 })
                 .catch(error => {
-                    container.innerHTML = '<p style="color:red; text-align:center; font-weight:bold;">ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।</p>';
+                    container.innerHTML = '<p style="color:#dc2626; text-align:center; font-weight:600;">ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।</p>';
                     console.error('Error:', error);
                 });
         }

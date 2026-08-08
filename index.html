@@ -222,48 +222,136 @@
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
             <div class="header-actions">
-                <button class="login-btn" onclick="openLoginModal()">লগইন</button>
+                <button class="login-btn" onclick="openLoginModal()" id="btn-login">লগইন</button>
                 <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 মোড</button>
             </div>
         </div>
-        <div class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
+        <div class="subtitle" id="sub-title">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
-        <!-- ফিল্টার কন্ট্রোল প্যানেল -->
+        <!-- ফিল্টার ও ভাষা পরিবর্তন কন্ট্রোল প্যানেল -->
         <div class="controls">
-            <div>
-                <label for="categoryFilter" style="font-size: 13px; font-weight: bold; margin-right: 5px;">ক্যাটাগরি:</label>
-                <select id="categoryFilter" class="filter-select" onchange="filterExams()">
-                    <option value="all">সকল পরীক্ষা (All)</option>
-                    <option value="wbprb">WBPRB / পুলিশ</option>
-                    <option value="wbpsc">WBPSC</option>
-                    <option value="ssc">SSC</option>
-                    <option value="rrb">RRB / রেলওয়ে</option>
-                </select>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div>
+                    <label id="lbl-cat" style="font-size: 12px; font-weight: bold; display: block;">ক্যাটাগরি:</label>
+                    <select id="categoryFilter" class="filter-select" onchange="filterExams()">
+                        <option value="all" id="opt-all">সকল পরীক্ষা</option>
+                        <option value="wbprb">WBPRB / পুলিশ</option>
+                        <option value="wbpsc">WBPSC</option>
+                        <option value="ssc">SSC</option>
+                        <option value="rrb">RRB / রেলওয়ে</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="lbl-lang" style="font-size: 12px; font-weight: bold; display: block;">ভাষা (Language):</label>
+                    <select id="langSelect" class="filter-select" onchange="changeLanguage()">
+                        <option value="bn">বাংলা (Bengali)</option>
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
             </div>
             <div>
                 <span class="last-updated" id="last-updated">লোড হচ্ছে...</span>
-                <button class="refresh-btn" onclick="fetchData()" style="display:inline-block; margin-left: 10px;">Refresh 🔄</button>
+                <button class="refresh-btn" onclick="fetchData()" id="btn-refresh" style="display:inline-block; margin-left: 10px;">Refresh 🔄</button>
             </div>
         </div>
 
         <div id="exams-container">
-            <!-- ডায়নামিক ডেটা এখানে ফিল্টার হয়ে আসবে -->
+            <!-- ডায়নামিক ডেটা এখানে আসবে -->
         </div>
     </div>
 
     <!-- লগইন পপআপ মডাল -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h3>প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন</h3>
-            <p style="font-size: 13px; margin-bottom: 15px;">আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।</p>
-            <button class="auth-option-btn google-auth" onclick="authWithGoogle()">🔵 Google Gmail দিয়ে লগইন</button>
-            <button class="auth-option-btn phone-auth" onclick="authWithPhone()">🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন</button>
-            <button class="auth-option-btn close-modal" onclick="closeLoginModal()">বন্ধ করুন</button>
+            <h3 id="modal-title">প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন</h3>
+            <p id="modal-desc" style="font-size: 13px; margin-bottom: 15px;">আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।</p>
+            <button class="auth-option-btn google-auth" onclick="authWithGoogle()" id="btn-g-auth">🔵 Google Gmail দিয়ে লগইন</button>
+            <button class="auth-option-btn phone-auth" onclick="authWithPhone()" id="btn-p-auth">🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন</button>
+            <button class="auth-option-btn close-modal" onclick="closeLoginModal()" id="btn-close">বন্ধ করুন</button>
         </div>
     </div>
 
     <script>
-        let allExamsData = []; // গ্লোবাল ডেটা স্টোর রাখার জন্য
+        let allExamsData = []; 
+
+        // বহুভাষিক ডিকশনারি (Multilingual Dictionary)
+        const translations = {
+            "bn": {
+                "subtitle": "আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম",
+                "login": "লগইন",
+                "category": "ক্যাটাগরি:",
+                "all_exams": "সকল পরীক্ষা",
+                "language": "ভাষা (Language):",
+                "last_update": "শেষ আপডেট:",
+                "refresh": "Refresh 🔄",
+                "start_date": "ফর্ম ফিলাপ শুরু:",
+                "end_date": "ফর্ম ফিলাপ শেষ:",
+                "no_data": "এই ক্যাটাগরিতে বর্তমানে কোনো নোটিশ নেই!",
+                "modal_title": "প্রবেশ করুন / অ্যাকাউন্ট তৈরি করুন",
+                "modal_desc": "আপনার পরীক্ষার অ্যালার্ট সুরক্ষিত রাখতে লগইন করুন।",
+                "google_login": "🔵 Google Gmail দিয়ে লগইন",
+                "phone_login": "🟢 মোবাইল নম্বর (OTP) দিয়ে লগইন",
+                "close": "বন্ধ করুন"
+            },
+            "en": {
+                "subtitle": "Your Automated Exam Alert System",
+                "login": "Login",
+                "category": "Category:",
+                "all_exams": "All Exams",
+                "language": "Language:",
+                "last_update": "Last Updated:",
+                "refresh": "Refresh 🔄",
+                "start_date": "Form Fill-up Start:",
+                "end_date": "Form Fill-up End:",
+                "no_data": "No notices available in this category currently!",
+                "modal_title": "Sign In / Register",
+                "modal_desc": "Login to keep your exam alerts secure.",
+                "google_login": "🔵 Login with Google Gmail",
+                "phone_login": "🟢 Login with Mobile Number (OTP)",
+                "close": "Close"
+            },
+            "hi": {
+                "subtitle": "आपकी स्वचालित परीक्षा अलर्ट प्रणाली",
+                "login": "लॉग इन",
+                "category": "श्रेणी:",
+                "all_exams": "सभी परीक्षाएं",
+                "language": "भाषा (Language):",
+                "last_update": "अंतिम अपडेट:",
+                "refresh": "रीफ्रेश 🔄",
+                "start_date": "फॉर्म भरने की शुरुआत:",
+                "end_date": "फॉर्म भरने की अंतिम तिथि:",
+                "no_data": "इस श्रेणी में वर्तमान में कोई सूचना उपलब्ध नहीं है!",
+                "modal_title": "साइन इन / रजिस्टर करें",
+                "modal_desc": "अपने परीक्षा अलर्ट को सुरक्षित रखने के लिए लॉग इन करें।",
+                "google_login": "🔵 Google Gmail से लॉगिन करें",
+                "phone_login": "🟢 मोबाइल नंबर (OTP) से लॉगिन करें",
+                "close": "बंद करें"
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            localStorage.setItem('selectedLang', lang);
+            updateUITexts(lang);
+        }
+
+        function updateUITexts(lang) {
+            const t = translations[lang] || translations["bn"];
+            document.getElementById('sub-title').innerText = t.subtitle;
+            document.getElementById('btn-login').innerText = t.login;
+            document.getElementById('lbl-cat').innerText = t.category;
+            document.getElementById('opt-all').innerText = t.all_exams;
+            document.getElementById('lbl-lang').innerText = t.language;
+            document.getElementById('btn-refresh').innerText = t.refresh;
+            document.getElementById('modal-title').innerText = t.modal_title;
+            document.getElementById('modal-desc').innerText = t.modal_desc;
+            document.getElementById('btn-g-auth').innerText = t.google_login;
+            document.getElementById('btn-p-auth').innerText = t.phone_login;
+            document.getElementById('btn-close').innerText = t.close;
+            
+            filterExams(); // কার্ডগুলোর ভেতরের টেক্সট আপডেট করার জন্য রিলোড করা
+        }
 
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
@@ -272,16 +360,16 @@
             document.getElementById('loginModal').style.display = 'none';
         }
         function authWithGoogle() {
-            alert("Google Gmail সিকিউর অথেন্টিকেশন প্রসেস শুরু হচ্ছে...");
+            alert("Google Gmail Secure Authentication initiated...");
             closeLoginModal();
         }
         function authWithPhone() {
-            let phone = prompt("আপনার ১০ ডিজিটের মোবাইল নম্বর দিন:");
+            let phone = prompt("Enter your 10-digit mobile number:");
             if(phone && phone.length >= 10) {
-                alert("আপনার নম্বরে একটি ওটিপি (OTP) পাঠানো হয়েছে: " + phone);
+                alert("OTP sent to your number: " + phone);
                 closeLoginModal();
             } else if(phone) {
-                alert("দয়া করে সঠিক মোবাইল নম্বর প্রদান করুন!");
+                alert("Please enter a valid mobile number!");
             }
         }
 
@@ -308,30 +396,32 @@
         function fetchData() {
             const container = document.getElementById('exams-container');
             const lastUpdated = document.getElementById('last-updated');
-            container.innerHTML = '<p style="text-align:center; font-weight:bold; color:#007bff;">নতুন ডেটা লোড হচ্ছে... ⏳</p>';
+            container.innerHTML = '<p style="text-align:center; font-weight:bold; color:#007bff;">Loading data... ⏳</p>';
             
             const url = 'exams_data.json?t=' + new Date().getTime();
             
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    // JSON ফরম্যাট যদি সরাসরি অ্যারে অথবা অবজেক্ট হয় তা হ্যান্ডেল করার লজিক
                     allExamsData = Array.isArray(data) ? data : (data.exams || []);
-                    filterExams(); // ডেটা আসার পর ফিল্টার ফাংশন কল হবে
+                    filterExams();
                     
                     const now = new Date();
-                    let timeString = now.toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    lastUpdated.innerHTML = `<strong>শেষ আপডেট:</strong> ${timeString}`;
+                    let timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const lang = document.getElementById('langSelect').value;
+                    const t = translations[lang] || translations["bn"];
+                    lastUpdated.innerHTML = `<strong>${t.last_update}</strong> ${timeString}`;
                 })
                 .catch(error => {
-                    container.innerHTML = '<p style="color:red; text-align:center; font-weight:bold;">ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।</p>';
+                    container.innerHTML = '<p style="color:red; text-align:center; font-weight:bold;">Error loading data! Please try again later.</p>';
                     console.error('Error:', error);
                 });
         }
 
-        // ক্যাটাগরি অনুযায়ী এক্সাম ফিল্টার করার লজিক
         function filterExams() {
             const selectedCategory = document.getElementById('categoryFilter').value;
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang] || translations["bn"];
             const container = document.getElementById('exams-container');
             container.innerHTML = '';
 
@@ -356,9 +446,9 @@
                     card.className = 'card';
                     card.innerHTML = `
                         <h3 class="exam-title">${exam.exam_name || 'Exam Update'}</h3>
-                        <div class="${statusClass}">স্ট্যাটাস: ${statusText}</div>
-                        <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${exam.form_fillup_start || 'N/A'}</p>
-                        <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end || 'N/A'}</p>
+                        <div class="${statusClass}">Status: ${statusText}</div>
+                        <p><strong>${t.start_date}</strong> ${exam.form_fillup_start || 'N/A'}</p>
+                        <p><strong>${t.end_date}</strong> ${exam.form_fillup_end || 'N/A'}</p>
                     `;
                     
                     const links = card.getElementsByTagName('a');
@@ -370,11 +460,16 @@
                     container.appendChild(card);
                 });
             } else {
-                container.innerHTML = '<p style="text-align:center; color: var(--sub-text); padding: 20px;">এই ক্যাটাগরিতে বর্তমানে কোনো নোটিশ নেই!</p>';
+                container.innerHTML = `<p style="text-align:center; color: var(--sub-text); padding: 20px;">${t.no_data}</p>`;
             }
         }
 
-        window.onload = fetchData;
+        window.onload = function() {
+            const savedLang = localStorage.getItem('selectedLang') || 'bn';
+            document.getElementById('langSelect').value = savedLang;
+            updateUITexts(savedLang);
+            fetchData();
+        };
     </script>
 </body>
 </html>

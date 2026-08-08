@@ -5,30 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExamDootAI - Government Exam Alerts</title>
     <style>
-        :root { --bg-color: #eef2f3; --container-bg: #ffffff; --text-color: #333333; --card-bg: #fafbfc; }
-        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-color); }
-        .container { max-width: 600px; margin: 0 auto; background: var(--container-bg); padding: 20px; border-radius: 12px; }
-        .card { border-left: 5px solid #007bff; background: var(--card-bg); margin-bottom: 20px; padding: 18px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .exam-title { font-size: 18px; color: #007bff; margin-bottom: 10px; }
+        :root { --bg-color: #eef2f3; --container-bg: #ffffff; --text-color: #333333; --card-bg: #fafbfc; --controls-bg: #f8f9fa; --sub-text: #666666; }
+        [data-theme="dark"] { --bg-color: #121212; --container-bg: #1e1e1e; --text-color: #e0e0e0; --card-bg: #2a2a2a; --controls-bg: #2d2d2d; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; color: var(--text-color); transition: 0.3s; }
+        .container { max-width: 600px; margin: 0 auto; background: var(--container-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        h1 { color: #007bff; margin: 0; font-size: 24px; }
+        .theme-btn { background: none; border: 2px solid #007bff; color: #007bff; padding: 5px 10px; border-radius: 20px; cursor: pointer; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; background: var(--controls-bg); padding: 10px; border-radius: 8px; }
+        .card { border-left: 5px solid #007bff; background: var(--card-bg); margin-bottom: 20px; padding: 18px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .exam-title { font-size: 18px; color: #007bff; font-weight: bold; margin-bottom: 10px; }
         .status { background: #e6f4ea; color: #1e8e3e; padding: 4px 10px; border-radius: 5px; font-size: 13px; display: inline-block; margin-bottom: 10px; }
-        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        a { color: #007bff; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>ExamDootAI 🚀</h1>
+        <div class="header-top">
+            <h1>ExamDootAI 🚀</h1>
+            <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 মোড</button>
+        </div>
         <div class="controls">
-            <select id="langSelect" onchange="filterExams()">
-                <option value="bn">বাংলা (Bengali)</option>
-                <option value="en">English</option>
-            </select>
+            <span id="last-updated">সময়: চেক হচ্ছে...</span>
             <button onclick="fetchData()">Refresh 🔄</button>
         </div>
         <div id="exams-container"></div>
     </div>
 
     <script>
-        let allExamsData = [];
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
 
         async function fetchData() {
             const container = document.getElementById('exams-container');
@@ -36,41 +45,22 @@
             try {
                 const response = await fetch('exams_data.json?t=' + new Date().getTime());
                 const data = await response.json();
-                allExamsData = data.exams || [];
-                filterExams();
+                container.innerHTML = '';
+                data.exams.forEach(exam => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3 class="exam-title">${exam.exam_name}</h3>
+                        <div class="status">${exam.status}</div>
+                        <p><strong>আপডেট:</strong> ${exam.form_fillup_start}</p>
+                        <p><strong>লিংক:</strong> ${exam.form_fillup_end}</p>
+                    `;
+                    container.appendChild(card);
+                });
+                document.getElementById('last-updated').innerText = 'আপডেট: ' + new Date().toLocaleTimeString();
             } catch (e) {
-                container.innerHTML = 'ডেটা লোড করতে সমস্যা হয়েছে।';
+                container.innerHTML = 'ডেটা পাওয়া যায়নি!';
             }
-        }
-
-        function filterExams() {
-            const lang = document.getElementById('langSelect').value;
-            const container = document.getElementById('exams-container');
-            container.innerHTML = '';
-
-            allExamsData.forEach(exam => {
-                // ১. পরীক্ষার নাম (ল্যাংগুয়েজ অনুযায়ী)
-                const name = (typeof exam.exam_name === 'object') ? (exam.exam_name[lang] || exam.exam_name['en']) : exam.exam_name;
-                
-                // ২. স্ট্যাটাস, শুরু এবং শেষ (এগুলো আপনার বর্তমান JSON অনুযায়ী সরাসরি আসবে)
-                const status = exam.status; 
-                const start = exam.form_fillup_start;
-                const end = exam.form_fillup_end;
-
-                // ৩. লেবেল সেট করা (ভাষার ওপর ভিত্তি করে)
-                const startLabel = (lang === 'bn') ? 'শুরু:' : 'Start:';
-                const endLabel = (lang === 'bn') ? 'শেষ:' : 'End:';
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3 class="exam-title">${name}</h3>
-                    <div class="status">${status}</div>
-                    <p><strong>${startLabel}</strong> ${start}</p>
-                    <p><strong>${endLabel}</strong> ${end}</p>
-                `;
-                container.appendChild(card);
-            });
         }
         window.onload = fetchData;
     </script>

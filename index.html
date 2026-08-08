@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamDootAI - Government Exam Alerts</title>
+    <title data-en="ExamDootAI - Government Exam Alerts" data-bn="ExamDootAI - Government Exam Alerts">ExamDootAI - Government Exam Alerts</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -60,21 +60,21 @@
         }
         .header-btns {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
-        .theme-btn, .auth-btn {
+        .theme-btn, .auth-btn, .lang-select {
             background: var(--controls-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
             transition: all 0.2s ease;
         }
-        .theme-btn:hover, .auth-btn:hover {
+        .theme-btn:hover, .auth-btn:hover, .lang-select:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
@@ -207,15 +207,20 @@
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
             <div class="header-btns">
-                <button class="auth-btn" id="auth-action-btn" onclick="openAuthModal()">লগইন / সাইন আপ</button>
-                <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙 ডার্ক</button>
+                <!-- ভাষা নির্বাচন ড্রপডাউন -->
+                <select class="lang-select" id="lang-switch" onchange="changeLanguage()">
+                    <option value="bn">বাংলা 🇧🇩</option>
+                    <option value="en">English 🇬🇧</option>
+                </select>
+                <button class="auth-btn" id="auth-action-btn" onclick="openAuthModal()" data-bn="লগইন / সাইন আপ" data-en="Login / Sign Up">লগইন / সাইন আপ</button>
+                <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙</button>
             </div>
         </div>
-        <div class="subtitle">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
+        <div class="subtitle" id="sub-title-text" data-bn="আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম" data-en="Your automated exam alert system">আপনার স্বয়ংক্রিয় পরীক্ষার অ্যালার্ট সিস্টেম</div>
         
         <div class="controls">
-            <span class="last-updated" id="last-updated">ডেটা চেক করা হচ্ছে... ⏳</span>
-            <button class="refresh-btn" onclick="fetchData()">Refresh 🔄</button>
+            <span class="last-updated" id="last-updated" data-bn="ডেটা চেক করা হচ্ছে... ⏳" data-en="Checking data... ⏳">ডেটা চেক করা হচ্ছে... ⏳</span>
+            <button class="refresh-btn" onclick="fetchData()" data-bn="Refresh 🔄" data-en="Refresh 🔄">Refresh 🔄</button>
         </div>
 
         <div id="exams-container"></div>
@@ -224,25 +229,25 @@
     <!-- লগইন মোডাল -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
-            <h3 id="modal-title">লগইন করুন</h3>
+            <h3 id="modal-title" data-bn="লগইন করুন" data-en="Login">লগইন করুন</h3>
             
-            <!-- গুগল লগইন বাটন -->
-            <button class="social-btn" onclick="handleGoogleLogin()">
+            <button class="social-btn" onclick="handleGoogleLogin()" data-bn="🌐 Google দিয়ে লগইন করুন" data-en="🌐 Login with Google">
                 🌐 Google দিয়ে লগইন করুন
             </button>
 
-            <p style="text-align: center; margin: 10px 0;">অথবা ইমেল দিয়ে</p>
-            <input type="email" id="email" placeholder="ইমেল লিখুন">
-            <input type="password" id="password" placeholder="পাসওয়ার্ড লিখুন">
+            <p style="text-align: center; margin: 10px 0;" data-bn="অথবা ইমেল দিয়ে" data-en="Or with Email">অথবা ইমেল দিয়ে</p>
+            <input type="email" id="email" placeholder="ইমেল লিখুন" data-bn-placeholder="ইমেল লিখুন" data-en-placeholder="Enter email">
+            <input type="password" id="password" placeholder="পাসওয়ার্ড লিখুন" data-bn-placeholder="পাসওয়ার্ড লিখুন" data-en-placeholder="Enter password">
             <div id="auth-error" style="color: red; font-size: 12px; margin-bottom: 10px;"></div>
             
             <div class="modal-buttons">
-                <button class="refresh-btn" onclick="handleEmailAuth()">ইমেল সাবমিট</button>
-                <button class="close-btn" onclick="closeAuthModal()">বন্ধ করুন</button>
+                <button class="refresh-btn" onclick="handleEmailAuth()" data-bn="ইমেল সাবমিট" data-en="Submit Email">ইমেল সাবমিট</button>
+                <button class="close-btn" onclick="closeAuthModal()" data-bn="বন্ধ করুন" data-en="Close">বন্ধ করুন</button>
             </div>
 
             <p style="text-align: center; margin-top: 15px; font-size: 13px;">
-                অ্যাকাউন্ট নেই? <a href="#" onclick="toggleAuthMode(event)" id="switch-mode-link">সাইন আপ করুন</a>
+                <span data-bn="অ্যাকাউন্ট নেই?" data-en="Don't have an account?">অ্যাকাউন্ট নেই?</span> 
+                <a href="#" onclick="toggleAuthMode(event)" id="switch-mode-link" data-bn="সাইন আপ করুন" data-en="Sign Up">সাইন আপ করুন</a>
             </p>
         </div>
     </div>
@@ -280,8 +285,14 @@
         window.toggleAuthMode = function(e) {
             e.preventDefault();
             isSignUp = !isSignUp;
-            document.getElementById('modal-title').innerText = isSignUp ? 'সাইন আপ করুন' : 'লগইন করুন';
-            document.getElementById('switch-mode-link').innerText = isSignUp ? 'লগইন করুন' : 'সাইন আপ করুন';
+            const lang = localStorage.getItem('lang') || 'bn';
+            if(lang === 'en') {
+                document.getElementById('modal-title').innerText = isSignUp ? 'Sign Up' : 'Login';
+                document.getElementById('switch-mode-link').innerText = isSignUp ? 'Login' : 'Sign Up';
+            } else {
+                document.getElementById('modal-title').innerText = isSignUp ? 'সাইন আপ করুন' : 'লগইন করুন';
+                document.getElementById('switch-mode-link').innerText = isSignUp ? 'লগইন করুন' : 'সাইন আপ করুন';
+            }
         }
 
         window.handleEmailAuth = function() {
@@ -310,27 +321,57 @@
 
         onAuthStateChanged(auth, (user) => {
             const authBtn = document.getElementById('auth-action-btn');
+            const lang = localStorage.getItem('lang') || 'bn';
             if (user) {
-                authBtn.innerText = 'লগআউট';
+                authBtn.innerText = (lang === 'en') ? 'Logout' : 'লগআউট';
                 authBtn.onclick = () => signOut(auth);
             } else {
-                authBtn.innerText = 'লগইন / সাইন আপ';
+                authBtn.innerText = (lang === 'en') ? 'Login / Sign Up' : 'লগইন / সাইন আপ';
                 authBtn.onclick = openAuthModal;
             }
         });
     </script>
 
     <script>
+        // ভাষা পরিবর্তন সংক্রান্ত ফাংশন
+        function changeLanguage() {
+            const lang = document.getElementById('lang-switch').value;
+            localStorage.setItem('lang', lang);
+
+            // সাধারণ টেক্সট পরিবর্তন
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${lang}`);
+            });
+
+            // প্লেসহোল্ডার পরিবর্তন
+            document.querySelectorAll('[data-bn-placeholder]').forEach(el => {
+                el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
+            });
+
+            // ফায়ারবেস লগআউট বাটন টেক্সট ঠিক রাখার জন্য
+            const authBtn = document.getElementById('auth-action-btn');
+            if(authBtn.innerText === 'লগআউট' || authBtn.innerText === 'Logout') {
+                authBtn.innerText = (lang === 'en') ? 'Logout' : 'লগআউট';
+            }
+        }
+
+        // সেভ করা ভাষা লোড করা
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lang') || 'bn';
+            document.getElementById('lang-switch').value = savedLang;
+            changeLanguage();
+        });
+
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const themeBtn = document.getElementById('theme-toggle');
             if (currentTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'light');
-                themeBtn.innerHTML = '🌙 ডার্ক';
+                themeBtn.innerHTML = '🌙';
                 localStorage.setItem('theme', 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '☀️ লাইট';
+                themeBtn.innerHTML = '☀️';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -338,13 +379,15 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         if (savedTheme === 'dark') {
-            document.getElementById('theme-toggle').innerHTML = '☀️ লাইট';
+            document.getElementById('theme-toggle').innerHTML = '☀️';
         }
 
         function fetchData() {
             const container = document.getElementById('exams-container');
             const lastUpdated = document.getElementById('last-updated');
-            container.innerHTML = '<p style="text-align:center; font-weight:600; color:var(--primary); padding: 20px;">নতুন ডেটা লোড হচ্ছে... ⏳</p>';
+            const lang = localStorage.getItem('lang') || 'bn';
+            
+            container.innerHTML = `<p style="text-align:center; font-weight:600; color:var(--primary); padding: 20px;">${lang === 'en' ? 'Loading new data... ⏳' : 'নতুন ডেটা লোড হচ্ছে... ⏳'}</p>`;
             
             const url = 'exams_data.json?t=' + new Date().getTime();
             
@@ -359,13 +402,14 @@
                                 statusClass += ' active';
                             }
                             
+                            // ব্যাকএন্ড থেকে আসা স্ট্যাটাস বা টেক্সট যদি অনুবাদ করতে চান বা যেমন আছে রাখতে চান
                             const card = document.createElement('div');
                             card.className = 'card';
                             card.innerHTML = `
                                 <h3 class="exam-title">${exam.exam_name}</h3>
-                                <div class="${statusClass}">স্ট্যাটাস: ${exam.status}</div>
-                                <p><strong>ফর্ম ফিলাপ শুরু:</strong> ${exam.form_fillup_start}</p>
-                                <p><strong>ফর্ম ফিলাপ শেষ:</strong> ${exam.form_fillup_end}</p>
+                                <div class="${statusClass}">${lang === 'en' ? 'Status: ' : 'স্ট্যাটাস: '} ${exam.status}</div>
+                                <p><strong>${lang === 'en' ? 'Form Fill-up Start:' : 'ফর্ম ফিলাপ শুরু:'}</strong> ${exam.form_fillup_start}</p>
+                                <p><strong>${lang === 'en' ? 'Form Fill-up End:' : 'ফর্ম ফিলাপ শেষ:'}</strong> ${exam.form_fillup_end}</p>
                             `;
                             
                             const links = card.getElementsByTagName('a');
@@ -378,14 +422,14 @@
                         });
                         
                         const now = new Date();
-                        let timeString = now.toLocaleTimeString('bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                        lastUpdated.innerHTML = `<strong>শেষ আপডেট:</strong> ${timeString}`;
+                        let timeString = now.toLocaleTimeString(lang === 'en' ? 'en-US' : 'bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        lastUpdated.innerHTML = `<strong>${lang === 'en' ? 'Last Update:' : 'শেষ আপডেট:'}</strong> ${timeString}`;
                     } else {
-                        container.innerHTML = '<p style="text-align:center;">কোনো ডেটা পাওয়া যায়নি!</p>';
+                        container.innerHTML = `<p style="text-align:center;">${lang === 'en' ? 'No data found!' : 'কোনো ডেটা পাওয়া যায়নি!'}</p>`;
                     }
                 })
                 .catch(error => {
-                    container.innerHTML = '<p style="color:#dc2626; text-align:center; font-weight:600;">ডেটা লোড করতে সমস্যা হয়েছে!</p>';
+                    container.innerHTML = `<p style="color:#dc2626; text-align:center; font-weight:600;">${lang === 'en' ? 'Error loading data! Please try again later.' : 'ডেটা লোড করতে সমস্যা হয়েছে! একটু পর আবার চেষ্টা করুন।'}</p>`;
                     console.error('Error:', error);
                 });
         }

@@ -1,28 +1,7 @@
 {
     "exams": [
-        {
-            "exam_name": "West Bengal Group D / WBPRB",
-            "status": "New Update 🔔",
-            "form_fillup_start": "আপডেট: Police Job News: পশ্চিমবঙ্গ পুলিশে ১ লাখ চাকরি, নিয়োগ কীভাবে...",
-            "form_fillup_end": "বিস্তারিত জানতে <a href='https://wbpolice.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
-        },
-        {
-            "exam_name": "WBPSC Official Website",
-            "status": "New Update 🔔",
-            "form_fillup_start": "নোটিশ: &nbsp;Advertisement/ Announcement",
-            "form_fillup_end": "বিস্তারিত জানতে <a href='https://psc.wb.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
-        },
-        {
-            "exam_name": "SSC (Staff Selection Commission)",
-            "status": "Site Active 🟢",
-            "form_fillup_start": "আজ নতুন কোনো নোটিশ নেই",
-            "form_fillup_end": "<a href='https://ssc.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ওয়েবসাইট</a> চেক করুন"
-        },
-        {
-            "exam_name": "RRB (Railway Recruitment Board)",
-            "status": "নতুন আপডেটের খোঁজ চলছে 🚂",
-            "form_fillup_start": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>",
-            "form_fillup_end": "<a href='https://indianrailways.gov.in/' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>indianrailways.gov.in</a>"
-        }
+        null,
+        null,
+        null
     ]
 }

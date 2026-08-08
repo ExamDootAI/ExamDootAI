@@ -207,9 +207,9 @@
         <div class="header-top">
             <h1>ExamDootAI 🚀</h1>
             <div class="header-btns">
-                <!-- ভাষা নির্বাচন ড্রপডাউন -->
+                <!-- ভাষা নির্বাচন ড্রপডাউন (ভারতীয় পতাকা সহ) -->
                 <select class="lang-select" id="lang-switch" onchange="changeLanguage()">
-                    <option value="bn">বাংলা 🇧🇩</option>
+                    <option value="bn">বাংলা 🇮🇳</option>
                     <option value="en">English 🇬🇧</option>
                 </select>
                 <button class="auth-btn" id="auth-action-btn" onclick="openAuthModal()" data-bn="লগইন / সাইন আপ" data-en="Login / Sign Up">লগইন / সাইন আপ</button>
@@ -333,29 +333,24 @@
     </script>
 
     <script>
-        // ভাষা পরিবর্তন সংক্রান্ত ফাংশন
         function changeLanguage() {
             const lang = document.getElementById('lang-switch').value;
             localStorage.setItem('lang', lang);
 
-            // সাধারণ টেক্সট পরিবর্তন
             document.querySelectorAll('[data-bn]').forEach(el => {
                 el.innerText = el.getAttribute(`data-${lang}`);
             });
 
-            // প্লেসহোল্ডার পরিবর্তন
             document.querySelectorAll('[data-bn-placeholder]').forEach(el => {
                 el.placeholder = el.getAttribute(`data-${lang}-placeholder`);
             });
 
-            // ফায়ারবেস লগআউট বাটন টেক্সট ঠিক রাখার জন্য
             const authBtn = document.getElementById('auth-action-btn');
             if(authBtn.innerText === 'লগআউট' || authBtn.innerText === 'Logout') {
                 authBtn.innerText = (lang === 'en') ? 'Logout' : 'লগআউট';
             }
         }
 
-        // সেভ করা ভাষা লোড করা
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('lang') || 'bn';
             document.getElementById('lang-switch').value = savedLang;
@@ -402,7 +397,6 @@
                                 statusClass += ' active';
                             }
                             
-                            // ব্যাকএন্ড থেকে আসা স্ট্যাটাস বা টেক্সট যদি অনুবাদ করতে চান বা যেমন আছে রাখতে চান
                             const card = document.createElement('div');
                             card.className = 'card';
                             card.innerHTML = `

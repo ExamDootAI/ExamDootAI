@@ -39,7 +39,7 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
         .container { 
-            max-width: 1000px; /* ডেস্কটপ সাইজের জন্য চওড়া বাড়ানো হলো */
+            max-width: 1000px;
             width: 100%;
             margin: 0 auto; 
             background: var(--container-bg); 
@@ -93,12 +93,58 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 24px; 
+            margin-bottom: 20px; 
             background: var(--controls-bg);
             padding: 12px 18px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
         }
+        
+        /* নতুন সার্চ ও ফিল্টার ডিজাইন */
+        .search-filter-box {
+            margin-bottom: 24px;
+            text-align: center;
+            background: var(--controls-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .search-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .last-updated {
             font-size: 12px;
             color: var(--sub-text);
@@ -224,6 +270,16 @@
             <button class="refresh-btn" onclick="fetchData()" data-bn="Refresh 🔄" data-en="Refresh 🔄">Refresh 🔄</button>
         </div>
 
+        <!-- স্মার্ট সার্চ ও ফিল্টার সেকশন -->
+        <div class="search-filter-box">
+            <input type="text" id="examSearch" class="search-input" placeholder="🔍 পরীক্ষা খুঁজুন (যেমন: SSC, WBPSC)..." data-bn-placeholder="🔍 পরীক্ষা খুঁজুন (যেমন: SSC, WBPSC)..." data-en-placeholder="🔍 Search exam (e.g. SSC, WBPSC)..." onkeyup="filterExams()">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterCategory('all', this)" data-bn="সব পরীক্ষা" data-en="All Exams">সব পরীক্ষা</button>
+                <button class="filter-btn" onclick="filterCategory('wb', this)" data-bn="পশ্চিমবঙ্গ জবস 🏛️" data-en="West Bengal Jobs 🏛️">পশ্চিমবঙ্গ জবস 🏛️</button>
+                <button class="filter-btn" onclick="filterCategory('central', this)" data-bn="কেন্দ্রীয় জবস 🇮🇳" data-en="Central Jobs 🇮🇳">কেন্দ্রীয় জবস 🇮🇳</button>
+            </div>
+        </div>
+
         <div id="exams-container"></div>
     </div>
 
@@ -334,6 +390,8 @@
     </script>
 
     <script>
+        let currentCategory = 'all';
+
         function changeLanguage() {
             const lang = document.getElementById('lang-switch').value;
             localStorage.setItem('lang', lang);
@@ -378,6 +436,37 @@
             document.getElementById('theme-toggle').innerHTML = '☀️';
         }
 
+        function filterExams() {
+            let input = document.getElementById('examSearch').value.toLowerCase();
+            let cards = document.querySelectorAll('.exam-card');
+            
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                let cardCategory = card.getAttribute('data-category');
+                
+                let matchesSearch = text.includes(input);
+                let matchesCategory = (currentCategory === 'all' || cardCategory === currentCategory);
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            
+            // সব ফিল্টার বাটন থেকে active ক্লাস রিমুভ করা
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            // ক্লিক করা বাটনে active ক্লাস যোগ করা
+            btn.classList.add('active');
+            
+            // ফিল্টার আপডেট করা
+            filterExams();
+        }
+
         function fetchData() {
             const container = document.getElementById('exams-container');
             const lastUpdated = document.getElementById('last-updated');
@@ -398,8 +487,12 @@
                                 statusClass += ' active';
                             }
                             
+                            // পাইথন থেকে আসা ক্যাটাগরি সেট করা (যদি না থাকে তবে ডিফল্ট central ধরা হবে)
+                            let examCategory = exam.category || 'central';
+                            
                             const card = document.createElement('div');
-                            card.className = 'card';
+                            card.className = 'card exam-card';
+                            card.setAttribute('data-category', examCategory);
                             card.innerHTML = `
                                 <h3 class="exam-title">${exam.exam_name}</h3>
                                 <div class="${statusClass}">${lang === 'en' ? 'Status: ' : 'স্ট্যাটাস: '} ${exam.status}</div>
@@ -415,6 +508,9 @@
 
                             container.appendChild(card);
                         });
+                        
+                        // ডেটা লোড হওয়ার পর সার্চ ও ফিল্টার রান করা যাতে সিলেকশন ঠিক থাকে
+                        filterExams();
                         
                         const now = new Date();
                         let timeString = now.toLocaleTimeString(lang === 'en' ? 'en-US' : 'bn-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });

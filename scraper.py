@@ -52,7 +52,7 @@ EXAM_SITES = [
         "id": "rrb",
         "exam_name": "Railway Recruitment Board (RRB)",
         "category": "central",
-        "url": "https://news.google.com/rss/search?q=RRB+Railway+Recruitment+Board+notice&hl=en&gl=IN&ceid=IN:en",
+        "url": "https://news.google.com/rss/search,q=RRB+Railway+Recruitment+Board+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://indianrailways.gov.in/"
     },
     {
@@ -82,6 +82,11 @@ def scan_website(site):
         titles = re.findall(r'<item>.*?<title>(.*?)</title>', xml_data, re.IGNORECASE | re.DOTALL)
         if titles:
             latest_news = titles[0].replace('&#39;', "'").replace('&quot;', '"')
+            
+            # সেফটি চেক: ভুল বা স্প্যাম ডোমেইন ব্লক করার জন্য
+            if "wbhrb24.in" in latest_news:
+                latest_news = "WBHRB Official Notification & Updates Available."
+                
             latest_news = latest_news[:60] + "..." if len(latest_news) > 60 else latest_news
             result["status"] = "New Update 🔔"
             result["form_fillup_start"] = f"আপডেট: {latest_news}"

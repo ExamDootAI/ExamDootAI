@@ -1,73 +1,74 @@
 import json
 import re
 import urllib.request
-import urllib.parse
 import ssl
 
-# সাধারণ সাইটের জন্য SSL মাস্টার-کی
 ssl_context = ssl._create_unverified_context()
 
-# ==========================================
-# কনফিগারেশন লিস্ট (সমস্ত সাইটের জন্য Google News RSS মেথড)
-# ==========================================
 EXAM_SITES = [
     {
         "id": "wbprb",
         "exam_name": "West Bengal Group D / WBPRB",
+        "category": "wb",
         "url": "https://news.google.com/rss/search?q=WBPRB+OR+West+Bengal+Police+recruitment+notice&hl=bn&gl=IN&ceid=IN:bn",
         "default_url": "https://wbpolice.gov.in/"
     },
     {
         "id": "wbpsc",
         "exam_name": "WBPSC (West Bengal Public Service Commission)",
+        "category": "wb",
         "url": "https://news.google.com/rss/search?q=WBPSC+OR+West+Bengal+Public+Service+Commission+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://psc.wb.gov.in/"
     },
     {
         "id": "wbbpe",
         "exam_name": "WBBPE (Primary TET / Education)",
+        "category": "wb",
         "url": "https://news.google.com/rss/search?q=WBBPE+OR+Primary+TET+West+Bengal+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://wbbpe.org/"
     },
     {
         "id": "wbhrb",
         "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
+        "category": "wb",
         "url": "https://news.google.com/rss/search?q=WBHRB+OR+West+Bengal+Health+Recruitment+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://wbhrb.in/"
     },
     {
         "id": "ssc",
         "exam_name": "SSC (Staff Selection Commission)",
+        "category": "central",
         "url": "https://news.google.com/rss/search?q=SSC+Staff+Selection+Commission+recruitment+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://ssc.gov.in/"
     },
     {
         "id": "upsc",
-        "exam_name": "UPSC (Union Public Service Commission)",
+        "exam_name": "Union Public Service Commission (UPSC)",
+        "category": "central",
         "url": "https://news.google.com/rss/search?q=UPSC+Union+Public+Service+Commission+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://upsc.gov.in/"
     },
     {
         "id": "rrb",
-        "exam_name": "RRB (Railway Recruitment Board)",
+        "exam_name": "Railway Recruitment Board (RRB)",
+        "category": "central",
         "url": "https://news.google.com/rss/search?q=RRB+Railway+Recruitment+Board+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://indianrailways.gov.in/"
     },
     {
         "id": "ibps",
         "exam_name": "IBPS (Banking - PO & Clerk)",
+        "category": "central",
         "url": "https://news.google.com/rss/search?q=IBPS+banking+recruitment+notice&hl=en&gl=IN&ceid=IN:en",
         "default_url": "https://www.ibps.in/"
     }
 ]
 
-# ==========================================
-# ইউনিভার্সাল RSS স্ক্যানার
-# ==========================================
 def scan_website(site):
     print(f"Scanning {site['exam_name']} via Google News RSS...")
     result = {
         "exam_name": site["exam_name"],
+        "category": site["category"],
         "status": "Site Active 🟢",
         "form_fillup_start": "অফিশিয়াল সাইট: <a href='" + site['default_url'] + "' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>" + site['default_url'].replace('https://', '').replace('/', '') + "</a>",
         "form_fillup_end": f"বিস্তারিত জানতে <a href='{site['default_url']}' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
@@ -91,12 +92,8 @@ def scan_website(site):
             
     return result
 
-# ==========================================
-# MASTER BOT
-# ==========================================
 def run_master_bot():
     all_exams = []
-    
     for site in EXAM_SITES:
         data = scan_website(site)
         all_exams.append(data)

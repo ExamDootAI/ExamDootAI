@@ -25,7 +25,7 @@ EXAM_SITES = [
         "exam_name": "WBBPE (Primary TET / Education)",
         "category": "wb",
         "url": "https://news.google.com/rss/search?q=WBBPE+OR+Primary+TET+West+Bengal+notice&hl=en&gl=IN&ceid=IN:en",
-        "default_url": "https://wbbpe.org/"
+        "default_url": "https://wbbpe.wb.gov.in/"
     },
     {
         "id": "wbhrb",

@@ -2,8 +2,9 @@ import json
 import re
 import urllib.request
 import ssl
+import certifi
 
-ssl_context = ssl._create_unverified_context()
+ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 EXAM_SITES = [
     {
@@ -31,8 +32,8 @@ EXAM_SITES = [
         "id": "wbhrb",
         "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
         "category": "wb",
-        "url": "https://news.google.com/rss/search?q=WBHRB+site:wbhrb.in&hl=en&gl=IN&ceid=IN:en",
-        "default_url": "https://wbhrb.in/"
+        "url": "https://news.google.com/rss/search?q=WBHRB+site:hrb.wb.gov.in&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://hrb.wb.gov.in/"
     },
     {
         "id": "ssc",
@@ -82,10 +83,6 @@ def scan_website(site):
         titles = re.findall(r'<item>.*?<title>(.*?)</title>', xml_data, re.IGNORECASE | re.DOTALL)
         if titles:
             latest_news = titles[0].replace('&#39;', "'").replace('&quot;', '"')
-            
-            # সেফটি চেক: ভুল বা স্প্যাম ডোমেইন ব্লক করার জন্য
-            if "wbhrb24.in" in latest_news:
-                latest_news = "WBHRB Official Notification & Updates Available."
                 
             latest_news = latest_news[:60] + "..." if len(latest_news) > 60 else latest_news
             result["status"] = "New Update 🔔"

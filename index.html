@@ -311,12 +311,12 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
-            signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup 
+            signOut, onAuthStateChanged, GoogleAuthProvider, signInWithRedirect, getRedirectResult
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCuH78TDVUJFQBebEtzrhlo09usrasXUqU",
-            authDomain: "examdootai.github.io",
+            authDomain: "diti-53fb6.firebaseapp.com",
             projectId: "diti-53fb6",
             storageBucket: "diti-53fb6.firebasestorage.app",
             messagingSenderId: "775144037393",
@@ -327,6 +327,17 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         let isSignUp = false;
+
+        // রিডাইরেক্ট লগইন এর ফলাফল হ্যান্ডেল করা
+        getRedirectResult(auth).then((result) => {
+            if (result) {
+                console.log("User successfully logged in via redirect:", result.user);
+                closeAuthModal();
+            }
+        }).catch((error) => {
+            console.error("Redirect login error:", error.message);
+            alert(error.message);
+        });
 
         window.openAuthModal = function() {
             document.getElementById('auth-modal').style.display = 'flex';
@@ -368,15 +379,7 @@
 
         window.handleGoogleLogin = function() {
             const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider)
-                .then(() => closeAuthModal())
-                .catch((error) => {
-                    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-                        console.log('User closed login popup');
-                    } else {
-                        alert(error.message);
-                    }
-                });
+            signInWithRedirect(auth, provider);
         }
 
         onAuthStateChanged(auth, (user) => {
@@ -527,4 +530,3 @@
     </script>
 </body>
 </html>
-

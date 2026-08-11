@@ -100,7 +100,6 @@
             border: 1px solid var(--border-color);
         }
         
-        /* নতুন সার্চ ও ফিল্টার ডিজাইন */
         .search-filter-box {
             margin-bottom: 24px;
             text-align: center;
@@ -191,7 +190,6 @@
         a { color: var(--primary); text-decoration: none; font-weight: 600; }
         a:hover { text-decoration: underline; }
 
-        /* মোডাল স্টাইল */
         .modal {
             display: none;
             position: fixed;
@@ -270,7 +268,6 @@
             <button class="refresh-btn" onclick="fetchData()" data-bn="Refresh 🔄" data-en="Refresh 🔄">Refresh 🔄</button>
         </div>
 
-        <!-- স্মার্ট সার্চ ও ফিল্টার সেকশন -->
         <div class="search-filter-box">
             <input type="text" id="examSearch" class="search-input" placeholder="🔍 পরীক্ষা খুঁজুন (যেমন: SSC, WBPSC)..." data-bn-placeholder="🔍 পরীক্ষা খুঁজুন (যেমন: SSC, WBPSC)..." data-en-placeholder="🔍 Search exam (e.g. SSC, WBPSC)..." onkeyup="filterExams()">
             <div class="filter-buttons">
@@ -309,7 +306,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (আপডেটেড ও বাগ ফিক্সড কোড) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -319,7 +316,7 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyCuH78TDVUJFQBebEtzrhlo09usrasXUqU",
-            authDomain: "diti-53fb6.firebaseapp.com",
+            authDomain: "examdootai.github.io",
             projectId: "diti-53fb6",
             storageBucket: "diti-53fb6.firebasestorage.app",
             messagingSenderId: "775144037393",
@@ -373,7 +370,13 @@
             const provider = new GoogleAuthProvider();
             signInWithPopup(auth, provider)
                 .then(() => closeAuthModal())
-                .catch((error) => alert(error.message));
+                .catch((error) => {
+                    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+                        console.log('User closed login popup');
+                    } else {
+                        alert(error.message);
+                    }
+                });
         }
 
         onAuthStateChanged(auth, (user) => {
@@ -458,12 +461,9 @@
         function filterCategory(cat, btn) {
             currentCategory = cat;
             
-            // সব ফিল্টার বাটন থেকে active ক্লাস রিমুভ করা
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            // ক্লিক করা বাটনে active ক্লাস যোগ করা
             btn.classList.add('active');
             
-            // ফিল্টার আপডেট করা
             filterExams();
         }
 
@@ -487,7 +487,6 @@
                                 statusClass += ' active';
                             }
                             
-                            // পাইথন থেকে আসা ক্যাটাগরি সেট করা (যদি না থাকে তবে ডিফল্ট central ধরা হবে)
                             let examCategory = exam.category || 'central';
                             
                             const card = document.createElement('div');
@@ -509,7 +508,6 @@
                             container.appendChild(card);
                         });
                         
-                        // ডেটা লোড হওয়ার পর সার্চ ও ফিল্টার রান করা যাতে সিলেকশন ঠিক থাকে
                         filterExams();
                         
                         const now = new Date();

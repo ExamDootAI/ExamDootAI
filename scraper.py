@@ -1,97 +1,110 @@
-import urllib.request
-import xml.etree.ElementTree as ET
 import json
 import re
-from datetime import datetime
+import urllib.request
+import ssl
 
-# Exam sources configuration
-SOURCES = [
+ssl_context = ssl._create_unverified_context()
+
+EXAM_SITES = [
     {
-        "name": "West Bengal Group D / WBPRB",
+        "id": "wbprb",
+        "exam_name": "West Bengal Group D / WBPRB",
         "category": "wb",
-        "url": "https://news.google.com/rss/search?q=WBPRB+West+Bengal+Police+recruitment&hl=en&gl=IN&ceid=IN:en"
+        "url": "https://news.google.com/rss/search?q=WBPRB+OR+West+Bengal+Police+recruitment+notice&hl=bn&gl=IN&ceid=IN:bn",
+        "default_url": "https://wbpolice.gov.in/"
     },
     {
-        "name": "WBPSC (West Bengal Public Service Commission)",
+        "id": "wbpsc",
+        "exam_name": "WBPSC (West Bengal Public Service Commission)",
         "category": "wb",
-        "url": "https://news.google.com/rss/search?q=WBPSC+West+Bengal+Public+Service+Commission+notice&hl=en&gl=IN&ceid=IN:en"
+        "url": "https://news.google.com/rss/search?q=WBPSC+OR+West+Bengal+Public+Service+Commission+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://psc.wb.gov.in/"
     },
     {
-        "name": "SSC (Staff Selection Commission)",
-        "category": "central",
-        "url": "https://news.google.com/rss/search?q=SSC+Staff+Selection+Commission+notice&hl=en&gl=IN&ceid=IN:en"
+        "id": "wbbpe",
+        "exam_name": "WBBPE (Primary TET / Education)",
+        "category": "wb",
+        "url": "https://news.google.com/rss/search?q=WBBPE+OR+Primary+TET+West+Bengal+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://wbbpe.wb.gov.in/"
     },
     {
-        "name": "Union Public Service Commission (UPSC)",
-        "category": "central",
-        "url": "https://news.google.com/rss/search?q=UPSC+recruitment+notification&hl=en&gl=IN&ceid=IN:en"
+        "id": "wbhrb",
+        "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
+        "category": "wb",
+        "url": "https://news.google.com/rss/search?q=WBHRB+site:wbhrb.in&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://wbhrb.in/"
     },
     {
-        "name": "Railway Recruitment Board (RRB)",
+        "id": "ssc",
+        "exam_name": "SSC (Staff Selection Commission)",
         "category": "central",
-        "url": "https://news.google.com/rss/search?q=RRB+Railway+Recruitment+Board+notice&hl=en&gl=IN&ceid=IN:en"
+        "url": "https://news.google.com/rss/search?q=SSC+Staff+Selection+Commission+recruitment+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://ssc.gov.in/"
+    },
+    {
+        "id": "upsc",
+        "exam_name": "Union Public Service Commission (UPSC)",
+        "category": "central",
+        "url": "https://news.google.com/rss/search?q=UPSC+Union+Public+Service+Commission+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://upsc.gov.in/"
+    },
+    {
+        "id": "rrb",
+        "exam_name": "Railway Recruitment Board (RRB)",
+        "category": "central",
+        "url": "https://news.google.com/rss/search?q=RRB+Railway+Recruitment+Board+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://indianrailways.gov.in/"
+    },
+    {
+        "id": "ibps",
+        "exam_name": "IBPS (Banking - PO & Clerk)",
+        "category": "central",
+        "url": "https://news.google.com/rss/search?q=IBPS+banking+recruitment+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://www.ibps.in/"
     }
 ]
 
-def clean_text(text):
-    if not text:
-        return ""
-    clean = re.sub('<.*?>', '', text)
-    return clean.strip()
-
-def fetch_exam_data():
-    exams_list = []
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-
-    for source in SOURCES:
-        try:
-            req = urllib.request.Request(source["url"], headers=headers)
-            with urllib.request.urlopen(req, timeout=10) as response:
-                xml_data = response.read()
-                
-            root = ET.fromstring(xml_data)
-            items = root.findall('.//item')
-            
-            status_text = "Site Active 🟢"
-            fillup_start = "অফিসিয়াল নোটিশ অনুযায়ী আপডেট দেখুন"
-            fillup_end = "বিস্তারিত জানতে বিস্তারিত লিঙ্কে ক্লিক করুন"
-            
-            if items:
-                latest_item = items[0]
-                title = clean_text(latest_item.find('title').text) if latest_item.find('title') is not None else ""
-                link = latest_item.find('link').text if latest_item.find('link') is not None else ""
-                
-                if title:
-                    status_text = "New Update 🔔"
-                    fillup_start = f"আপডেট: {title[:80]}..."
-                    fillup_end = f"বিস্তারিত জানতে <a href='{link}' target='_blank' rel='noopener noreferrer'>ক্লিক করুন</a>"
-            
-            exams_list.append({
-                "exam_name": source["name"],
-                "category": source["category"],
-                "status": status_text,
-                "form_fillup_start": fillup_start,
-                "form_fillup_end": fillup_end
-            })
-        except Exception as e:
-            print(f"Error fetching {source['name']}: {e}")
-            exams_list.append({
-                "exam_name": source["name"],
-                "category": source["category"],
-                "status": "Site Active 🟢",
-                "form_fillup_start": "অফিসিয়াল সাইট: <a href='https://indianrailways.gov.in' target='_blank' rel='noopener noreferrer'>indianrailways.gov.in</a>" if "RRB" in source["name"] else "অফিসিয়াল সাইট চেক করুন",
-                "form_fillup_end": "বিস্তারিত জানতে অফিসিয়াল ওয়েবসাইটে যান"
-            })
-
-    output_data = {
-        "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "exams": exams_list
+def scan_website(site):
+    print(f"Scanning {site['exam_name']} via Google News RSS...")
+    result = {
+        "exam_name": site["exam_name"],
+        "category": site["category"],
+        "status": "Site Active 🟢",
+        "form_fillup_start": "অফিশিয়াল সাইট: <a href='" + site['default_url'] + "' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>" + site['default_url'].replace('https://', '').replace('/', '') + "</a>",
+        "form_fillup_end": f"বিস্তারিত জানতে <a href='{site['default_url']}' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
     }
-
-    with open("exams_data.json", "w", encoding="utf-8") as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=4)
+    
+    try:
+        req = urllib.request.Request(site['url'], headers={'User-Agent': 'Mozilla/5.0'})
+        response = urllib.request.urlopen(req, context=ssl_context, timeout=15)
+        xml_data = response.read().decode('utf-8', errors='ignore')
         
-    print("exams_data.json successfully updated!")
- 
+        titles = re.findall(r'<item>.*?<title>(.*?)</title>', xml_data, re.IGNORECASE | re.DOTALL)
+        if titles:
+            latest_news = titles[0].replace('&#39;', "'").replace('&quot;', '"')
+            
+            # সেফটি চেক: ভুল বা স্প্যাম ডোমেইন ব্লক করার জন্য
+            if "wbhrb24.in" in latest_news:
+                latest_news = "WBHRB Official Notification & Updates Available."
+                
+            latest_news = latest_news[:60] + "..." if len(latest_news) > 60 else latest_news
+            result["status"] = "New Update 🔔"
+            result["form_fillup_start"] = f"আপডেট: {latest_news}"
+            result["form_fillup_end"] = f"বিস্তারিত জানতে <a href='{site['default_url']}' target='_blank' style='color: #007bff; text-decoration: none; font-weight: bold;'>ক্লিক করুন</a>"
+            
+    except Exception as e:
+        print(f"Error scanning {site['exam_name']}: {e}")
+            
+    return result
+
+def run_master_bot():
+    all_exams = []
+    for site in EXAM_SITES:
+        data = scan_website(site)
+        all_exams.append(data)
+    
+    with open('exams_data.json', 'w', encoding='utf-8') as f:
+        json.dump({"exams": all_exams}, f, ensure_ascii=False, indent=4)
+        
 if __name__ == "__main__":
-    fetch_exam_data()
+    run_master_bot()

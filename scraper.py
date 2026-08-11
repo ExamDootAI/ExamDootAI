@@ -92,6 +92,6 @@ def fetch_exam_data():
         json.dump(output_data, f, ensure_ascii=False, indent=4)
         
     print("exams_data.json successfully updated!")
-
+ 
 if __name__ == "__main__":
     fetch_exam_data()

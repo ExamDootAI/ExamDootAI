@@ -31,8 +31,8 @@ EXAM_SITES = [
         "id": "wbhrb",
         "exam_name": "West Bengal Health Recruitment Board (WBHRB)",
         "category": "wb",
-        "url": "https://news.google.com/rss/search?q=WBHRB+site:wbhrb.in&hl=en&gl=IN&ceid=IN:en",
-        "default_url": "https://wbhrb.in/"
+        "url": "https://news.google.com/rss/search?q=WBHRB+recruitment+notice&hl=en&gl=IN&ceid=IN:en",
+        "default_url": "https://www.hrb.wb.gov.in/"
     },
     {
         "id": "ssc",

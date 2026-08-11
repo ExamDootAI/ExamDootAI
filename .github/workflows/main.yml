@@ -1,13 +1,22 @@
-name: ExamDootAI Auto-Scraper
+name: ExamDootAI Auto-Scraper & Deploy
 
 on:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  run-scraper:
+  run-scraper-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -25,7 +34,7 @@ jobs:
     - name: Run Scraper
       run: python scraper.py
 
-    - name: Commit and Push Updated Data
+    - name: Commit and Push Updated JSON
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -33,3 +42,15 @@ jobs:
         git config --global user.email "bot@examdootai.com"
         git add exams_data.json
         git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update exam data" && git push)
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
